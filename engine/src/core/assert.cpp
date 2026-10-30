@@ -5,8 +5,7 @@
 
 namespace yforge::detail
 {
-    [[noreturn]]
-    inline void assertionFailed(
+    void assertionFailed(
         const char* expression,
         const char* file,
         int line,
