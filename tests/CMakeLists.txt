@@ -3,7 +3,7 @@ add_executable(YForgeLoggerTest
 )
 
 target_link_libraries(YForgeLoggerTest
-    PRIVATE YForge::Engine
+    PRIVATE YForgeEngine
 )
 
 add_test(
