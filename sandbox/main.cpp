@@ -1,10 +1,16 @@
-#include <iostream>
+#include "YForge/engine.h"
+
+class Application
+{
+};
 
 int main()
 {
-    std::cout << "YForge Engine\n";
-    std::cout << "Version: 0.1.0\n";
-    std::cout << "Sandbox initialized successfully!\n";
+    YForge::Engine engine;
+
+    engine.initialize();
+    engine.run<Application>();
+    engine.shutdown();
 
     return 0;
 }
