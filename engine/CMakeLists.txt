@@ -2,6 +2,7 @@ add_library(YForgeEngine STATIC
     src/core/engine.cpp
     src/core/logger.cpp
     src/core/assert.cpp
+    src/core/service_registry.cpp
 )
 
 add_library(YForge::Engine ALIAS YForgeEngine)
