@@ -1,0 +1,17 @@
+# Automatically normalize text files
+* text=auto
+
+# Use LF for source code and build files
+*.cpp   text eol=lf
+*.h     text eol=lf
+*.hpp   text eol=lf
+*.cmake text eol=lf
+CMakeLists.txt text eol=lf
+
+# Git-related configuration
+.gitattributes text eol=lf
+.gitignore     text eol=lf
+
+# Windows scripts
+*.bat text eol=crlf
+*.cmd text eol=crlf
