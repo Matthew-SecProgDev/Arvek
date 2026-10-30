@@ -1,6 +1,6 @@
-#include "YForge/engine.h"
+#include "yforge/core/engine.h"
 
-namespace YForge
+namespace yforge
 {
     void Engine::initialize()
     {

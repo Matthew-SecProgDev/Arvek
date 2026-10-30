@@ -6,42 +6,25 @@ project(YForge
     LANGUAGES CXX
 )
 
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_EXTENSIONS OFF)
+find_package(fmt CONFIG QUIET)
 
-# Engine Library
-add_library(YForgeEngine STATIC
-    engine/src/Engine.cpp
-)
+if(NOT fmt_FOUND)
+    include(FetchContent)
 
-target_compile_features(YForgeEngine PUBLIC cxx_std_17)
+    FetchContent_Declare(
+        fmt
+        GIT_REPOSITORY https://github.com/fmtlib/fmt.git
+        GIT_TAG e69e5f977d458f2650bb346dadf2ad30c5320281
+    )
 
-target_include_directories(YForgeEngine PUBLIC
-    ${CMAKE_CURRENT_SOURCE_DIR}/engine/include
-)
+    FetchContent_MakeAvailable(fmt)
+endif()
 
-# Sandbox application for testing engine features.
-add_executable(YForgeSandbox
-    sandbox/main.cpp
-)
+add_subdirectory(engine)
+add_subdirectory(sandbox)
 
-target_link_libraries(YForgeSandbox PRIVATE
-    YForgeEngine
-)
+include(CTest)
 
-# Compiler Warnings
-function(yforge_set_warnings target)
-    if(MSVC)
-        target_compile_options(${target} PRIVATE /W4)
-    else()
-        target_compile_options(${target} PRIVATE
-            -Wall
-            -Wextra
-            -Wpedantic
-        )
-    endif()
-endfunction()
-
-yforge_set_warnings(YForgeEngine)
-yforge_set_warnings(YForgeSandbox)
+if(BUILD_TESTING)
+    add_subdirectory(tests)
+endif()

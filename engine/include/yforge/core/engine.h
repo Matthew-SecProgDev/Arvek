@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-namespace YForge
+namespace yforge
 {
 	class Engine final
 	{
@@ -25,7 +25,7 @@ namespace YForge
 }
 
 template <typename TApp>
-void YForge::Engine::run()
+void yforge::Engine::run()
 {
 	std::cout << "YForge Engine run!\n";
 }
