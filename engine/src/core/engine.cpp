@@ -1,14 +1,14 @@
-#include "yforge/core/engine.h"
+#include "arvek/core/engine.h"
 
-namespace yforge
+namespace arvek
 {
     void Engine::initialize()
     {
-        std::cout << "YForge Engine initialized!\n";
+        std::cout << "Arvek Engine initialized!\n";
     }
 
     void Engine::shutdown()
     {
-        std::cout << "YForge Engine shutdown!\n";
+        std::cout << "Arvek Engine shutdown!\n";
     }
 }

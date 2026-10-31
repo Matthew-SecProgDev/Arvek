@@ -1,11 +1,11 @@
-#include "yforge/core/service_registry.h"
+#include "arvek/core/service_registry.h"
 
-yforge::ServiceRegistry::~ServiceRegistry()
+arvek::ServiceRegistry::~ServiceRegistry()
 {
 	clear();
 }
 
-void yforge::ServiceRegistry::clear() noexcept
+void arvek::ServiceRegistry::clear() noexcept
 {
     services_.clear();
 
@@ -15,7 +15,7 @@ void yforge::ServiceRegistry::clear() noexcept
     }
 }
 
-std::size_t yforge::ServiceRegistry::size() const noexcept
+std::size_t arvek::ServiceRegistry::size() const noexcept
 {
     return ownedServices_.size();
 }

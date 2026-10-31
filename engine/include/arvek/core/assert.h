@@ -1,6 +1,6 @@
 #pragma once
 
-namespace yforge::detail
+namespace arvek::detail
 {
     [[noreturn]]
     void assertionFailed(
@@ -11,16 +11,16 @@ namespace yforge::detail
 }
 
 #ifndef NDEBUG
-    #define YF_ASSERT(condition, message)                     \
+    #define ARV_ASSERT(condition, message)                     \
         do                                                    \
         {                                                     \
             if (!(condition))                                 \
             {                                                 \
-                ::yforge::detail::assertionFailed(            \
+                ::arvek::detail::assertionFailed(            \
                     #condition, __FILE__, __LINE__, message   \
                 );                                            \
             }                                                 \
         } while (false)
 #else
-    #define YF_ASSERT(condition, message) ((void)0)
+    #define ARV_ASSERT(condition, message) ((void)0)
 #endif

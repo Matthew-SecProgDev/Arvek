@@ -1,4 +1,4 @@
-#include <yforge/core/assert.h>
+#include <arvek/core/assert.h>
 
 #include <string_view>
 #include <cstdlib>
@@ -18,11 +18,11 @@ int main(int argc, char* argv[])
 
     if (shouldFail)
     {
-        YF_ASSERT(false, "Intentional assertion failure");
+        ARV_ASSERT(false, "Intentional assertion failure");
     }
     else
     {
-        YF_ASSERT(true, "This should never fail");
+        ARV_ASSERT(true, "This should never fail");
     }
 
     return EXIT_SUCCESS;

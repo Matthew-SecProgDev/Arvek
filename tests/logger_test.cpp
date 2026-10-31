@@ -1,11 +1,11 @@
-#include <yforge/core/logger.h>
+#include <arvek/core/logger.h>
 
 #include <cstdlib>
 #include <iostream>
 
 int main()
 {
-    using namespace yforge;
+    using namespace arvek;
 
     Logger::setMinLevel(LogLevel::Warning);
 

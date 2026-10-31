@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.21)
 
-project(YForge
+project(Arvek
     VERSION 0.1.0
     DESCRIPTION "A C++ game engine focused on high-performance Vulkan rendering"
     LANGUAGES CXX

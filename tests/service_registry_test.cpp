@@ -1,4 +1,4 @@
-#include <yforge/core/service_registry.h>
+#include <arvek/core/service_registry.h>
 
 #include <cassert>
 #include <memory>
@@ -55,7 +55,7 @@ namespace
 
 int main()
 {
-    using namespace yforge;
+    using namespace arvek;
 
     ServiceRegistry registry;
 

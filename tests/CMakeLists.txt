@@ -1,46 +1,46 @@
-add_executable(YForgeLoggerTest
+add_executable(ArvekLoggerTest
     logger_test.cpp
 )
 
-target_link_libraries(YForgeLoggerTest
-    PRIVATE YForgeEngine
+target_link_libraries(ArvekLoggerTest
+    PRIVATE ArvekEngine
 )
 
 add_test(
-    NAME YForgeLoggerTest
-    COMMAND YForgeLoggerTest
+    NAME ArvekLoggerTest
+    COMMAND ArvekLoggerTest
 )
 
-add_executable(YForgeAssertTest
+add_executable(ArvekAssertTest
     assert_test.cpp
 )
 
-target_link_libraries(YForgeAssertTest
-    PRIVATE YForgeEngine
+target_link_libraries(ArvekAssertTest
+    PRIVATE ArvekEngine
 )
 
 add_test(
-    NAME YForgeAssertPass
-    COMMAND YForgeAssertTest
+    NAME ArvekAssertPass
+    COMMAND ArvekAssertTest
 )
 
 add_test(
-    NAME YForgeAssertFailure
+    NAME ArvekAssertFailure
     CONFIGURATIONS Debug
     COMMAND ${CMAKE_COMMAND}
-        "-DTEST_EXECUTABLE=$<TARGET_FILE:YForgeAssertTest>"
+        "-DTEST_EXECUTABLE=$<TARGET_FILE:ArvekAssertTest>"
         -P "${CMAKE_CURRENT_SOURCE_DIR}/check_assert_failure.cmake"
 )
 
-add_executable(YForgeServiceRegistryTest
+add_executable(ArvekServiceRegistryTest
     service_registry_test.cpp
 )
 
-target_link_libraries(YForgeServiceRegistryTest
-    PRIVATE YForgeEngine
+target_link_libraries(ArvekServiceRegistryTest
+    PRIVATE ArvekEngine
 )
 
 add_test(
-    NAME YForgeServiceRegistryTest
-    COMMAND YForgeServiceRegistryTest
+    NAME ArvekServiceRegistryTest
+    COMMAND ArvekServiceRegistryTest
 )

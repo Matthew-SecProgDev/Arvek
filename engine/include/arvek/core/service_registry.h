@@ -9,7 +9,7 @@
 #include <utility>
 #include <vector>
 
-namespace yforge
+namespace arvek
 {
     class ServiceRegistry final
     {
@@ -61,7 +61,7 @@ namespace yforge
 }
 
 template <typename T>
-T& yforge::ServiceRegistry::add(std::unique_ptr<T> service)
+T& arvek::ServiceRegistry::add(std::unique_ptr<T> service)
 {
     static_assert(!std::is_void_v<T>, "Service type cannot be void");
 
@@ -97,7 +97,7 @@ T& yforge::ServiceRegistry::add(std::unique_ptr<T> service)
 }
 
 template <typename T>
-T* yforge::ServiceRegistry::find() const noexcept
+T* arvek::ServiceRegistry::find() const noexcept
 {
     const auto it = services_.find(std::type_index(typeid(T)));
 
@@ -110,7 +110,7 @@ T* yforge::ServiceRegistry::find() const noexcept
 }
 
 template <typename T>
-T& yforge::ServiceRegistry::require() const
+T& arvek::ServiceRegistry::require() const
 {
     T* service = find<T>();
 

@@ -1,4 +1,4 @@
-#include "yforge/core/logger.h"
+#include "arvek/core/logger.h"
 
 #include <atomic>
 #include <cstdio>
@@ -7,21 +7,21 @@
 namespace
 {
     std::mutex logMutex;
-    std::atomic<yforge::LogLevel> minimumLevel{
-        yforge::LogLevel::Trace
+    std::atomic<arvek::LogLevel> minimumLevel{
+        arvek::LogLevel::Trace
     };
 
-    const char* toString(yforge::LogLevel level) noexcept
+    const char* toString(arvek::LogLevel level) noexcept
     {
         switch (level)
         {
-        case yforge::LogLevel::Trace:
+        case arvek::LogLevel::Trace:
             return "TRACE";
-        case yforge::LogLevel::Info:
+        case arvek::LogLevel::Info:
             return "INFO";
-        case yforge::LogLevel::Warning:
+        case arvek::LogLevel::Warning:
             return "WARNING";
-        case yforge::LogLevel::Error:
+        case arvek::LogLevel::Error:
             return "ERROR";
         }
 
@@ -29,7 +29,7 @@ namespace
     }
 }
 
-namespace yforge
+namespace arvek
 {
     void Logger::setMinLevel(LogLevel level) noexcept
     {

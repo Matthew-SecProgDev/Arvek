@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-namespace yforge
+namespace arvek
 {
 	class Engine final
 	{
@@ -25,7 +25,7 @@ namespace yforge
 }
 
 template <typename TApp>
-void yforge::Engine::run()
+void arvek::Engine::run()
 {
-	std::cout << "YForge Engine run!\n";
+	std::cout << "Arvek Engine run!\n";
 }

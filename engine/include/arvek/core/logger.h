@@ -5,7 +5,7 @@
 #include <string>
 #include <utility>
 
-namespace yforge
+namespace arvek
 {
     enum class LogLevel
     {
@@ -41,7 +41,7 @@ namespace yforge
 }
 
 template <typename... Args>
-void yforge::Logger::log(
+void arvek::Logger::log(
     LogLevel level,
     const char* file,
     int line,
@@ -61,22 +61,22 @@ void yforge::Logger::log(
     write(level, file, line, message);
 }
 
-#define YF_LOG_TRACE(...) \
-    ::yforge::Logger::log( \
-        ::yforge::LogLevel::Trace, \
+#define ARV_LOG_TRACE(...) \
+    ::arvek::Logger::log( \
+        ::arvek::LogLevel::Trace, \
         __FILE__, __LINE__, __VA_ARGS__)
 
-#define YF_LOG_INFO(...) \
-    ::yforge::Logger::log( \
-        ::yforge::LogLevel::Info, \
+#define ARV_LOG_INFO(...) \
+    ::arvek::Logger::log( \
+        ::arvek::LogLevel::Info, \
         __FILE__, __LINE__, __VA_ARGS__)
 
-#define YF_LOG_WARN(...) \
-    ::yforge::Logger::log( \
-        ::yforge::LogLevel::Warning, \
+#define ARV_LOG_WARN(...) \
+    ::arvek::Logger::log( \
+        ::arvek::LogLevel::Warning, \
         __FILE__, __LINE__, __VA_ARGS__)
 
-#define YF_LOG_ERROR(...) \
-    ::yforge::Logger::log( \
-        ::yforge::LogLevel::Error, \
+#define ARV_LOG_ERROR(...) \
+    ::arvek::Logger::log( \
+        ::arvek::LogLevel::Error, \
         __FILE__, __LINE__, __VA_ARGS__)

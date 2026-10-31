@@ -1,9 +1,9 @@
-#include "yforge/core/assert.h"
+#include "arvek/core/assert.h"
 
 #include <cstdlib>
 #include <cstdio>
 
-namespace yforge::detail
+namespace arvek::detail
 {
     void assertionFailed(
         const char* expression,

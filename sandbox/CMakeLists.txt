@@ -1,15 +1,15 @@
-add_executable(YForgeSandbox
+add_executable(ArvekSandbox
     main.cpp
 )
 
-target_link_libraries(YForgeSandbox
-    PRIVATE YForgeEngine
+target_link_libraries(ArvekSandbox
+    PRIVATE ArvekEngine
 )
 
 if(MSVC)
-    target_compile_options(YForgeSandbox PRIVATE /W4 /utf-8)
+    target_compile_options(ArvekSandbox PRIVATE /W4 /utf-8)
 else()
-    target_compile_options(YForgeSandbox PRIVATE
+    target_compile_options(ArvekSandbox PRIVATE
         -Wall
         -Wextra
         -Wpedantic

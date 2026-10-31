@@ -1,6 +1,6 @@
-#include <yforge/core/engine.h>
-#include <yforge/core/logger.h>
-#include <yforge/core/assert.h>
+#include <arvek/core/engine.h>
+#include <arvek/core/logger.h>
+#include <arvek/core/assert.h>
 
 #include <cstdlib>
 
@@ -11,21 +11,21 @@ class Application
 int main()
 {
     int value = 42;
-    YF_ASSERT(value == 42, "Value must equal 42");
-    //YF_ASSERT(value == 100, "Value must equal 100");
+    ARV_ASSERT(value == 42, "Value must equal 42");
+    //ARV_ASSERT(value == 100, "Value must equal 100");
 
-    yforge::Logger::setMinLevel(yforge::LogLevel::Trace);
+    arvek::Logger::setMinLevel(arvek::LogLevel::Trace);
 
-    YF_LOG_INFO("YForge sandbox started");
-    YF_LOG_TRACE("Using C++{}", 17);
+    ARV_LOG_INFO("Arvek sandbox started");
+    ARV_LOG_TRACE("Using C++{}", 17);
 
-    yforge::Engine engine;
+    arvek::Engine engine;
 
     engine.initialize();
-    YF_LOG_WARN("Vulkan renderer is not integrated yet");
+    ARV_LOG_WARN("Vulkan renderer is not integrated yet");
     engine.run<Application>();
     engine.shutdown();
-    YF_LOG_INFO("YForge sandbox shutdown complete");
+    ARV_LOG_INFO("Arvek sandbox shutdown complete");
 
     return EXIT_SUCCESS;
 }
