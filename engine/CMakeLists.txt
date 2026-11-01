@@ -3,6 +3,8 @@ add_library(ArvekEngine STATIC
     src/core/logger.cpp
     src/core/assert.cpp
     src/core/service_registry.cpp
+    src/core/service_provider.cpp
+    src/core/service_registrar.cpp
 )
 
 add_library(Arvek::Engine ALIAS ArvekEngine)

@@ -11,25 +11,25 @@ int main()
 
     if (Logger::isEnabled(LogLevel::Trace))
     {
-        std::cerr << "FAILED: Trace should be disabled.\n";
+        std::cerr << "FAILED: Trace should be disabled!\n";
         return EXIT_FAILURE;
     }
 
     if (Logger::isEnabled(LogLevel::Info))
     {
-        std::cerr << "FAILED: Info should be disabled.\n";
+        std::cerr << "FAILED: Info should be disabled!\n";
         return EXIT_FAILURE;
     }
 
     if (!Logger::isEnabled(LogLevel::Warning))
     {
-        std::cerr << "FAILED: Warning should be enabled.\n";
+        std::cerr << "FAILED: Warning should be enabled!\n";
         return EXIT_FAILURE;
     }
 
     if (!Logger::isEnabled(LogLevel::Error))
     {
-        std::cerr << "FAILED: Error should be enabled.\n";
+        std::cerr << "FAILED: Error should be enabled!\n";
         return EXIT_FAILURE;
     }
 

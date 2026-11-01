@@ -40,7 +40,29 @@ target_link_libraries(ArvekServiceRegistryTest
     PRIVATE ArvekEngine
 )
 
+target_include_directories(ArvekServiceRegistryTest
+    PRIVATE
+        ${PROJECT_SOURCE_DIR}/engine/src/core
+)
+
 add_test(
     NAME ArvekServiceRegistryTest
     COMMAND ArvekServiceRegistryTest
+)
+
+add_executable(ArvekServiceHolderTest
+    service_holder_test.cpp
+)
+
+target_compile_features(ArvekServiceHolderTest
+    PRIVATE cxx_std_17
+)
+
+target_link_libraries(ArvekServiceHolderTest
+    PRIVATE ArvekEngine
+)
+
+add_test(
+    NAME ArvekServiceHolderTest
+    COMMAND ArvekServiceHolderTest
 )

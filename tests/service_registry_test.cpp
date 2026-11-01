@@ -1,123 +1,190 @@
-#include <arvek/core/service_registry.h>
+#include "service_registry.h"
+#include <arvek/core/service_provider.h>
+#include <arvek/core/service_registrar.h>
 
-#include <cassert>
 #include <memory>
 #include <stdexcept>
 #include <vector>
+#include <cstdlib>
+#include <type_traits>
+#include <utility>
 
 namespace
 {
-    struct FirstService
+    struct EngineService
     {
         int value{ 42 };
     };
 
-    struct SecondService
+    struct GameService
     {
         int value{ 100 };
     };
 
+    struct OtherService
+    {
+    };
+
     struct TrackedService
     {
-        TrackedService(
-            std::vector<int>& events,
-            int identifier)
-            : events_(events),
-            identifier_(identifier)
+        TrackedService(std::vector<int>& events, int id)
+            : events_(events), id_(id)
         {
         }
 
         ~TrackedService()
         {
-            events_.push_back(identifier_);
+            events_.push_back(id_);
         }
 
         std::vector<int>& events_;
-        int identifier_;
+        int id_;
     };
 
-    struct AnotherTrackedService
+    struct OtherTrackedService
     {
-        explicit AnotherTrackedService(
-            std::vector<int>& events)
+        explicit OtherTrackedService(std::vector<int>& events)
             : events_(events)
         {
         }
 
-        ~AnotherTrackedService()
+        ~OtherTrackedService()
         {
             events_.push_back(2);
         }
 
         std::vector<int>& events_;
     };
+
+    template<typename T, typename = void>
+    struct HasEngineRegistration : std::false_type {};
+
+    template<typename T>
+    struct HasEngineRegistration<T, std::void_t<
+        decltype(std::declval<T&>().addEngineService(
+            std::declval<std::unique_ptr<EngineService>>()
+        ))
+        >> : std::true_type {};
 }
 
 int main()
 {
     using namespace arvek;
 
+    // Game registration capability must not expose
+    // engine-service registration.
+    static_assert(
+        !HasEngineRegistration<ServiceRegistrar>::value,
+        "Game registrar must not register engine services"
+        );
+
     ServiceRegistry registry;
 
-    assert(registry.size() == 0);
-    assert(registry.find<FirstService>() == nullptr);
+    auto provider = registry.provider();
+    auto registrar = registry.gameRegistrar();
 
-    registry.add(std::make_unique<FirstService>());
+    if (registry.size() != 0)
+    {
+        return EXIT_FAILURE;
+    }
 
-    assert(registry.size() == 1);
-    assert(registry.require<FirstService>().value == 42);
+    // Engine service registration.
+    registry.addEngineService(
+        std::make_unique<EngineService>()
+    );
 
+    // Game service registration.
+    registrar.addGameService(
+        std::make_unique<GameService>()
+    );
+
+    // Provider retrieves both categories.
+    if (provider.require<EngineService>().value != 42)
+    {
+        return EXIT_FAILURE;
+    }
+
+    if (provider.require<GameService>().value != 100)
+    {
+        return EXIT_FAILURE;
+    }
+
+    if (registry.size() != 2)
+    {
+        return EXIT_FAILURE;
+    }
+
+    // Missing service.
+    if (provider.find<OtherService>() != nullptr)
+    {
+        return EXIT_FAILURE;
+    }
+
+    bool missingRejected = false;
+
+    try
+    {
+        (void)provider.require<OtherService>();
+    }
+    catch (const std::logic_error&)
+    {
+        missingRejected = true;
+    }
+
+    if (!missingRejected)
+    {
+        return EXIT_FAILURE;
+    }
+
+    // Duplicate registration.
     bool duplicateRejected = false;
 
     try
     {
-        registry.add(std::make_unique<FirstService>());
+        registrar.addGameService(
+            std::make_unique<EngineService>()
+        );
     }
     catch (const std::logic_error&)
     {
         duplicateRejected = true;
     }
 
-    if (!duplicateRejected)
+    if (!duplicateRejected || registry.size() != 2)
     {
-        return 1;
-    }
-
-    registry.add(std::make_unique<SecondService>());
-
-    if (registry.require<SecondService>().value != 100)
-    {
-        return 2;
+        return EXIT_FAILURE;
     }
 
     registry.clear();
 
-    if (registry.size() != 0 ||
-        registry.find<FirstService>() != nullptr)
+    if (registry.size() != 0)
     {
-        return 3;
+        return EXIT_FAILURE;
     }
 
+    // Verify game-before-engine destruction.
     std::vector<int> destructionOrder;
 
     {
         ServiceRegistry lifetimeRegistry;
 
-        lifetimeRegistry.add(
+        lifetimeRegistry.addEngineService(
             std::make_unique<TrackedService>(
-                destructionOrder, 1)
+                destructionOrder, 1
+            )
         );
 
-        lifetimeRegistry.add(
-            std::make_unique<AnotherTrackedService>(
-                destructionOrder)
+        lifetimeRegistry.gameRegistrar().addGameService(
+            std::make_unique<OtherTrackedService>(
+                destructionOrder
+            )
         );
     }
 
     if (destructionOrder != std::vector<int>{ 2, 1 })
     {
-        return 4;
+        return EXIT_FAILURE;
     }
 
-    return 0;
+    return EXIT_SUCCESS;
 }
