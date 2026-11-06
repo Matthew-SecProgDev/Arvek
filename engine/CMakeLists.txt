@@ -5,6 +5,7 @@ add_library(ArvekEngine STATIC
     src/core/service_registry.cpp
     src/core/service_provider.cpp
     src/core/service_registrar.cpp
+    src/core/glfw_runtime.cpp
 )
 
 add_library(Arvek::Engine ALIAS ArvekEngine)
@@ -19,6 +20,8 @@ target_include_directories(ArvekEngine
 target_link_libraries(ArvekEngine
     PUBLIC
         fmt::fmt
+    PRIVATE
+        glfw
 )
 
 if(MSVC)

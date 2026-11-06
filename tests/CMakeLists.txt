@@ -79,3 +79,21 @@ add_test(
     NAME ArvekEngineLifecycleTest
     COMMAND ArvekEngineLifecycleTest
 )
+
+add_executable(ArvekGlfwRuntimeTest
+    glfw_runtime_test.cpp
+)
+
+target_link_libraries(ArvekGlfwRuntimeTest
+    PRIVATE ArvekEngine
+)
+
+target_include_directories(ArvekGlfwRuntimeTest
+    PRIVATE
+        ${PROJECT_SOURCE_DIR}/engine/src/core
+)
+
+add_test(
+    NAME ArvekGlfwRuntimeTest
+    COMMAND ArvekGlfwRuntimeTest
+)
