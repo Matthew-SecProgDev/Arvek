@@ -79,3 +79,34 @@ add_test(
     NAME ArvekEngineLifecycleTest
     COMMAND ArvekEngineLifecycleTest
 )
+
+add_executable(ArvekGlfwRuntimeTest
+    glfw_runtime_test.cpp
+)
+
+target_link_libraries(ArvekGlfwRuntimeTest
+    PRIVATE ArvekEngine
+)
+
+target_include_directories(ArvekGlfwRuntimeTest
+    PRIVATE
+        ${PROJECT_SOURCE_DIR}/engine/src/core
+)
+
+add_test(
+    NAME ArvekGlfwRuntimeTest
+    COMMAND ArvekGlfwRuntimeTest
+)
+
+add_executable(ArvekGlfwWindowManualTest
+    glfw_window_manual_test.cpp
+)
+
+target_link_libraries(ArvekGlfwWindowManualTest
+    PRIVATE ArvekEngine
+)
+
+target_include_directories(ArvekGlfwWindowManualTest
+    PRIVATE
+        ${PROJECT_SOURCE_DIR}/engine/src/core
+)
