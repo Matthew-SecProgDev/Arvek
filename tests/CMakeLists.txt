@@ -66,3 +66,16 @@ add_test(
     NAME ArvekServiceHolderTest
     COMMAND ArvekServiceHolderTest
 )
+
+add_executable(ArvekEngineLifecycleTest
+    engine_lifecycle_test.cpp
+)
+
+target_link_libraries(ArvekEngineLifecycleTest
+    PRIVATE ArvekEngine
+)
+
+add_test(
+    NAME ArvekEngineLifecycleTest
+    COMMAND ArvekEngineLifecycleTest
+)
