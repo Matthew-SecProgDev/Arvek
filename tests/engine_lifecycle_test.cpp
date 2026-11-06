@@ -1,4 +1,5 @@
 #include <arvek/core/engine.h>
+#include <arvek/core/window.h>
 
 #include <stdexcept>
 #include <cstdlib>
@@ -35,7 +36,17 @@ int main()
         return EXIT_FAILURE;
     }
 
-    // Test 2: Double initialization must fail.
+    // Test 2: The engine exposes an initialized window.
+    auto& window = engine.window();
+
+    const auto extent = window.framebufferExtent();
+
+    if (extent.width == 0 || extent.height == 0)
+    {
+        return EXIT_FAILURE;
+    }
+
+    // Test 3: Double initialization must fail.
     bool doubleInitializationRejected = false;
 
     try
@@ -53,7 +64,7 @@ int main()
         return EXIT_FAILURE;
     }
 
-    // Test 3: Run must succeed.
+    // Test 4: Run must succeed.
     bool PerformingRunSuccessful = true;
 
     try
@@ -71,13 +82,30 @@ int main()
         return EXIT_FAILURE;
     }
 
-    // Test 4: Shutdown
+    // Test 5: Shutdown
     engine.shutdown();
 
-    // Test 5: Repeated shutdown is safe.
+    // Test 6: Repeated shutdown is safe.
     engine.shutdown();
 
-    // Test 6: Run before initialization must fail.
+    // Test 7: Window access after shutdown must fail.
+    bool windowAccessRejected = false;
+
+    try
+    {
+        (void)engine.window();
+    }
+    catch (const std::logic_error&)
+    {
+        windowAccessRejected = true;
+    }
+
+    if (!windowAccessRejected)
+    {
+        return EXIT_FAILURE;
+    }
+
+    // Test 8: Run before initialization must fail.
     bool PerformingRunRejected = false;
 
     try
@@ -95,7 +123,7 @@ int main()
         return EXIT_FAILURE;
     }
 
-    // Test 7: Reinitialization after shutdown fails.
+    // Test 9: Reinitialization after shutdown fails.
     bool reinitializationRejected = false;
 
     try
@@ -113,7 +141,7 @@ int main()
         return EXIT_FAILURE;
     }
 
-    // Test 8: Shutdown before initialization is safe.
+    // Test 10: Shutdown before initialization is safe.
     Engine unusedEngine;
     unusedEngine.shutdown();
     unusedEngine.shutdown();

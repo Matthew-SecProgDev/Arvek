@@ -7,6 +7,7 @@ add_library(ArvekEngine STATIC
     src/core/service_registrar.cpp
     src/core/glfw_runtime.cpp
     src/core/glfw_window_backend.cpp
+    src/core/window.cpp
 )
 
 add_library(Arvek::Engine ALIAS ArvekEngine)
