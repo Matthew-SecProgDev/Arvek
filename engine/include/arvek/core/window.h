@@ -8,6 +8,7 @@ namespace arvek
 {
     class Engine;
     class WindowBackend;
+    class Surface;
 
     class Window final
     {
@@ -35,6 +36,7 @@ namespace arvek
 
     private:
         friend class Engine;
+        friend class Surface;
 
         explicit Window(std::unique_ptr<WindowBackend> backend);
 

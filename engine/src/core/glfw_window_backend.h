@@ -2,12 +2,13 @@
 
 #include "window_backend.h"
 #include "window_config.h"
+#include "../rendering/surface_provider.h"
 
 struct GLFWwindow;
 
 namespace arvek
 {
-    class GlfwWindowBackend final : public WindowBackend
+    class GlfwWindowBackend final : public WindowBackend, public SurfaceProvider
     {
     public:
         explicit GlfwWindowBackend(const WindowConfig& config);
@@ -23,6 +24,9 @@ namespace arvek
 
         void pollEvents() override;
         void waitEvents() override;
+
+        [[nodiscard]]
+        VkSurfaceKHR createSurface(VkInstance instance) const override;
 
         [[nodiscard]]
         WindowExtent framebufferExtent() const override;

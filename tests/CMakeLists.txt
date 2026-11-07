@@ -103,7 +103,9 @@ add_executable(ArvekGlfwWindowManualTest
 )
 
 target_link_libraries(ArvekGlfwWindowManualTest
-    PRIVATE ArvekEngine
+    PRIVATE
+        ArvekEngine
+        Vulkan::Vulkan
 )
 
 target_include_directories(ArvekGlfwWindowManualTest
@@ -129,4 +131,24 @@ target_include_directories(ArvekVulkanInstanceTest
 add_test(
     NAME ArvekVulkanInstanceTest
     COMMAND ArvekVulkanInstanceTest
+)
+
+add_executable(ArvekVulkanSurfaceTest
+    vulkan_surface_test.cpp
+)
+
+target_link_libraries(ArvekVulkanSurfaceTest
+    PRIVATE
+        ArvekEngine
+        Vulkan::Vulkan
+)
+
+target_include_directories(ArvekVulkanSurfaceTest
+    PRIVATE
+        ${PROJECT_SOURCE_DIR}/engine/src/rendering
+)
+
+add_test(
+    NAME ArvekVulkanSurfaceTest
+    COMMAND ArvekVulkanSurfaceTest
 )

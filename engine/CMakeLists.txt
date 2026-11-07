@@ -9,6 +9,7 @@ add_library(ArvekEngine STATIC
     src/core/glfw_window_backend.cpp
     src/core/window.cpp
     src/rendering/instance.cpp
+    src/rendering/surface.cpp
 )
 
 add_library(Arvek::Engine ALIAS ArvekEngine)
