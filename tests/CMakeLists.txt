@@ -182,3 +182,24 @@ add_test(
     NAME ArvekVulkanPhysicalDeviceTest
     COMMAND ArvekVulkanPhysicalDeviceTest
 )
+
+# ArvekVulkanDeviceTest
+add_executable(ArvekVulkanDeviceTest
+    vulkan_device_test.cpp
+)
+
+target_link_libraries(ArvekVulkanDeviceTest
+    PRIVATE
+        ArvekEngine
+        Vulkan::Vulkan
+)
+
+target_include_directories(ArvekVulkanDeviceTest
+    PRIVATE
+        ${PROJECT_SOURCE_DIR}/engine/src/rendering
+)
+
+add_test(
+    NAME ArvekVulkanDeviceTest
+    COMMAND ArvekVulkanDeviceTest
+)

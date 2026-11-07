@@ -54,7 +54,6 @@ namespace arvek
         if (instance_ != VK_NULL_HANDLE)
         {
             vkDestroyInstance(instance_, nullptr);
-            instance_ = VK_NULL_HANDLE;
         }
     }
 

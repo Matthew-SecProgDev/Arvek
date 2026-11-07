@@ -97,7 +97,6 @@ namespace arvek
         if (window_)
         {
             glfwDestroyWindow(window_);
-            window_ = nullptr;
         }
     }
 

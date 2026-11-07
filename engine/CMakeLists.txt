@@ -11,6 +11,7 @@ add_library(ArvekEngine STATIC
     src/rendering/instance.cpp
     src/rendering/surface.cpp
     src/rendering/physical_device.cpp
+    src/rendering/device.cpp
 )
 
 add_library(Arvek::Engine ALIAS ArvekEngine)
