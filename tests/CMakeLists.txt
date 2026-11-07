@@ -266,3 +266,24 @@ add_test(
     NAME ArvekVulkanCommandPoolTest
     COMMAND ArvekVulkanCommandPoolTest
 )
+
+# ArvekVulkanQueueSubmissionTest
+add_executable(ArvekVulkanQueueSubmissionTest
+    vulkan_queue_submission_test.cpp
+)
+
+target_link_libraries(ArvekVulkanQueueSubmissionTest
+    PRIVATE
+        ArvekEngine
+        Vulkan::Vulkan
+)
+
+target_include_directories(ArvekVulkanQueueSubmissionTest
+    PRIVATE
+        ${PROJECT_SOURCE_DIR}/engine/src/rendering
+)
+
+add_test(
+    NAME ArvekVulkanQueueSubmissionTest
+    COMMAND ArvekVulkanQueueSubmissionTest
+)
