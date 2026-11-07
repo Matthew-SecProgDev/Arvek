@@ -13,6 +13,7 @@ add_library(ArvekEngine STATIC
     src/rendering/physical_device.cpp
     src/rendering/device.cpp
     src/rendering/swapchain.cpp
+    src/rendering/command_pool.cpp
 )
 
 add_library(Arvek::Engine ALIAS ArvekEngine)

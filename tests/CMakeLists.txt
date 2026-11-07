@@ -245,3 +245,24 @@ add_test(
     NAME ArvekVulkanSwapchainTest
     COMMAND ArvekVulkanSwapchainTest
 )
+
+# ArvekVulkanCommandPoolTest
+add_executable(ArvekVulkanCommandPoolTest
+    vulkan_command_pool_test.cpp
+)
+
+target_link_libraries(ArvekVulkanCommandPoolTest
+    PRIVATE
+        ArvekEngine
+        Vulkan::Vulkan
+)
+
+target_include_directories(ArvekVulkanCommandPoolTest
+    PRIVATE
+        ${PROJECT_SOURCE_DIR}/engine/src/rendering
+)
+
+add_test(
+    NAME ArvekVulkanCommandPoolTest
+    COMMAND ArvekVulkanCommandPoolTest
+)
