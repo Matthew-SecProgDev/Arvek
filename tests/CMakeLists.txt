@@ -287,3 +287,19 @@ add_test(
     NAME ArvekVulkanQueueSubmissionTest
     COMMAND ArvekVulkanQueueSubmissionTest
 )
+
+# ArvekVulkanClearPresentManualTest
+add_executable(ArvekVulkanClearPresentManualTest
+    vulkan_clear_present_manual_test.cpp
+)
+
+target_link_libraries(ArvekVulkanClearPresentManualTest
+    PRIVATE
+        ArvekEngine
+        Vulkan::Vulkan
+)
+
+target_include_directories(ArvekVulkanClearPresentManualTest
+    PRIVATE
+        ${PROJECT_SOURCE_DIR}/engine/src/rendering
+)

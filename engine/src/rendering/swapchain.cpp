@@ -222,7 +222,24 @@ namespace arvek
             );
 
             const auto surfaceFormat = chooseSurfaceFormat(formats);
+
+            VkFormatProperties formatProperties{};
+
+            vkGetPhysicalDeviceFormatProperties(
+                physicalDevice.handle(),
+                surfaceFormat.format,
+                &formatProperties
+            );
+
+            if ((formatProperties.optimalTilingFeatures & VK_FORMAT_FEATURE_TRANSFER_DST_BIT) == 0)
+            {
+                throw std::runtime_error(
+                    "Selected swapchain format does not support transfer destinations!"
+                );
+            }
+
             const auto presentMode = choosePresentMode(modes);
+
             const auto imageExtent = chooseExtent(capabilities, window);
 
             std::uint32_t imageCount = capabilities.minImageCount + 1;
@@ -235,10 +252,13 @@ namespace arvek
                 );
             }
 
-            if ((capabilities.supportedUsageFlags & VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT) == 0)
+            constexpr VkImageUsageFlags requiredUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT |
+                VK_IMAGE_USAGE_TRANSFER_DST_BIT;
+
+            if ((capabilities.supportedUsageFlags & requiredUsage) != requiredUsage)
             {
                 throw std::runtime_error(
-                    "Surface does not support color attachment images!"
+                    "Surface does not support the required swapchain image usages!"
                 );
             }
 
@@ -255,7 +275,8 @@ namespace arvek
             createInfo.imageColorSpace = surfaceFormat.colorSpace;
             createInfo.imageExtent = imageExtent;
             createInfo.imageArrayLayers = 1;
-            createInfo.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
+            createInfo.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT |
+                VK_IMAGE_USAGE_TRANSFER_DST_BIT;
 
             if (queueFamilies[0] != queueFamilies[1])
             {

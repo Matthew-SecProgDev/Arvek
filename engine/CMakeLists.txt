@@ -15,6 +15,7 @@ add_library(ArvekEngine STATIC
     src/rendering/swapchain.cpp
     src/rendering/command_pool.cpp
     src/rendering/fence.cpp
+    src/rendering/semaphore.cpp
 )
 
 add_library(Arvek::Engine ALIAS ArvekEngine)
