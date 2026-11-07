@@ -74,6 +74,8 @@ namespace arvek
         createInfo.pEnabledFeatures = &enabledFeatures;
         createInfo.enabledExtensionCount = static_cast<std::uint32_t>(extensions.size());
         createInfo.ppEnabledExtensionNames = extensions.data();
+        createInfo.enabledLayerCount = 0;
+        createInfo.ppEnabledLayerNames = nullptr;
 
         const VkResult result = vkCreateDevice(
             physicalDevice.handle(),

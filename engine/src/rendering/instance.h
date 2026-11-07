@@ -7,7 +7,12 @@ namespace arvek
     class Instance final
     {
     public:
-        Instance();
+#ifdef NDEBUG
+        explicit Instance(bool enableValidation = false);
+#else
+        explicit Instance(bool enableValidation = true);
+#endif
+
         ~Instance();
 
         Instance(const Instance&) = delete;
@@ -20,5 +25,6 @@ namespace arvek
 
     private:
         VkInstance instance_{ VK_NULL_HANDLE };
+        VkDebugUtilsMessengerEXT debugMessenger_{ VK_NULL_HANDLE };
     };
 }

@@ -203,3 +203,24 @@ add_test(
     NAME ArvekVulkanDeviceTest
     COMMAND ArvekVulkanDeviceTest
 )
+
+# ArvekVulkanValidationTest
+add_executable(ArvekVulkanValidationTest
+    vulkan_validation_test.cpp
+)
+
+target_link_libraries(ArvekVulkanValidationTest
+    PRIVATE
+        ArvekEngine
+        Vulkan::Vulkan
+)
+
+target_include_directories(ArvekVulkanValidationTest
+    PRIVATE
+        ${PROJECT_SOURCE_DIR}/engine/src/rendering
+)
+
+add_test(
+    NAME ArvekVulkanValidationTest
+    COMMAND ArvekVulkanValidationTest
+)
