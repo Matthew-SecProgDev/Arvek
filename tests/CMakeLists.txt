@@ -1,3 +1,4 @@
+# ArvekLoggerTest
 add_executable(ArvekLoggerTest
     logger_test.cpp
 )
@@ -11,6 +12,7 @@ add_test(
     COMMAND ArvekLoggerTest
 )
 
+# ArvekAssertTest
 add_executable(ArvekAssertTest
     assert_test.cpp
 )
@@ -32,6 +34,7 @@ add_test(
         -P "${CMAKE_CURRENT_SOURCE_DIR}/check_assert_failure.cmake"
 )
 
+# ArvekServiceRegistryTest
 add_executable(ArvekServiceRegistryTest
     service_registry_test.cpp
 )
@@ -50,6 +53,7 @@ add_test(
     COMMAND ArvekServiceRegistryTest
 )
 
+# ArvekServiceHolderTest
 add_executable(ArvekServiceHolderTest
     service_holder_test.cpp
 )
@@ -67,6 +71,7 @@ add_test(
     COMMAND ArvekServiceHolderTest
 )
 
+# ArvekEngineLifecycleTest
 add_executable(ArvekEngineLifecycleTest
     engine_lifecycle_test.cpp
 )
@@ -80,6 +85,7 @@ add_test(
     COMMAND ArvekEngineLifecycleTest
 )
 
+# ArvekGlfwRuntimeTest
 add_executable(ArvekGlfwRuntimeTest
     glfw_runtime_test.cpp
 )
@@ -98,6 +104,7 @@ add_test(
     COMMAND ArvekGlfwRuntimeTest
 )
 
+# ArvekGlfwWindowManualTest
 add_executable(ArvekGlfwWindowManualTest
     glfw_window_manual_test.cpp
 )
@@ -113,6 +120,7 @@ target_include_directories(ArvekGlfwWindowManualTest
         ${PROJECT_SOURCE_DIR}/engine/src/core
 )
 
+# ArvekVulkanInstanceTest
 add_executable(ArvekVulkanInstanceTest
     vulkan_instance_test.cpp
 )
@@ -133,6 +141,7 @@ add_test(
     COMMAND ArvekVulkanInstanceTest
 )
 
+# ArvekVulkanSurfaceTest
 add_executable(ArvekVulkanSurfaceTest
     vulkan_surface_test.cpp
 )
@@ -151,4 +160,25 @@ target_include_directories(ArvekVulkanSurfaceTest
 add_test(
     NAME ArvekVulkanSurfaceTest
     COMMAND ArvekVulkanSurfaceTest
+)
+
+# ArvekVulkanPhysicalDeviceTest
+add_executable(ArvekVulkanPhysicalDeviceTest
+    vulkan_physical_device_test.cpp
+)
+
+target_link_libraries(ArvekVulkanPhysicalDeviceTest
+    PRIVATE
+        ArvekEngine
+        Vulkan::Vulkan
+)
+
+target_include_directories(ArvekVulkanPhysicalDeviceTest
+    PRIVATE
+        ${PROJECT_SOURCE_DIR}/engine/src/rendering
+)
+
+add_test(
+    NAME ArvekVulkanPhysicalDeviceTest
+    COMMAND ArvekVulkanPhysicalDeviceTest
 )

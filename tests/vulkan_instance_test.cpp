@@ -1,5 +1,4 @@
 #include <arvek/core/engine.h>
-
 #include "instance.h"
 
 #include <exception>

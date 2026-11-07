@@ -17,10 +17,7 @@ int main()
         {
             arvek::Instance instance;
 
-            arvek::Surface surface(
-                engine.window(),
-                instance
-            );
+            arvek::Surface surface(engine.window(), instance);
 
             if (surface.handle() == VK_NULL_HANDLE)
             {
