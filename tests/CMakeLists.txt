@@ -110,3 +110,23 @@ target_include_directories(ArvekGlfwWindowManualTest
     PRIVATE
         ${PROJECT_SOURCE_DIR}/engine/src/core
 )
+
+add_executable(ArvekVulkanInstanceTest
+    vulkan_instance_test.cpp
+)
+
+target_link_libraries(ArvekVulkanInstanceTest
+    PRIVATE
+        ArvekEngine
+        Vulkan::Vulkan
+)
+
+target_include_directories(ArvekVulkanInstanceTest
+    PRIVATE
+        ${PROJECT_SOURCE_DIR}/engine/src/rendering
+)
+
+add_test(
+    NAME ArvekVulkanInstanceTest
+    COMMAND ArvekVulkanInstanceTest
+)

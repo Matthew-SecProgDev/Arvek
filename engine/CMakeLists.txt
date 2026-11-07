@@ -8,6 +8,7 @@ add_library(ArvekEngine STATIC
     src/core/glfw_runtime.cpp
     src/core/glfw_window_backend.cpp
     src/core/window.cpp
+    src/rendering/instance.cpp
 )
 
 add_library(Arvek::Engine ALIAS ArvekEngine)
@@ -24,6 +25,7 @@ target_link_libraries(ArvekEngine
         fmt::fmt
     PRIVATE
         glfw
+        Vulkan::Vulkan
 )
 
 if(MSVC)
