@@ -2,9 +2,12 @@
 
 #include "device.h"
 #include "framebuffer.h"
+#include "graphics_pipeline.h"
 #include "instance.h"
 #include "physical_device.h"
+#include "pipeline_layout.h"
 #include "render_pass.h"
+#include "shader_module.h"
 #include "surface.h"
 #include "swapchain.h"
 
@@ -13,7 +16,10 @@
 
 namespace arvek
 {
-    VulkanRenderer::VulkanRenderer(Window& window) : window_(window)
+    VulkanRenderer::VulkanRenderer(Window& window,
+        const std::vector<std::uint32_t>& vertexSpirv,
+        const std::vector<std::uint32_t>& fragmentSpirv)
+        : window_(window)
     {
         instance_ = std::make_unique<Instance>();
 
@@ -55,6 +61,26 @@ namespace arvek
                     swapchain_->extent())
             );
         }
+
+        vertexShader_ = std::make_unique<ShaderModule>(
+            *device_,
+            vertexSpirv
+        );
+
+        fragmentShader_ = std::make_unique<ShaderModule>(
+            *device_,
+            fragmentSpirv
+        );
+
+        pipelineLayout_ = std::make_unique<PipelineLayout>(*device_);
+
+        graphicsPipeline_ = std::make_unique<GraphicsPipeline>(
+            *device_,
+            *renderPass_,
+            *pipelineLayout_,
+            *vertexShader_,
+            *fragmentShader_
+        );
     }
 
     VulkanRenderer::~VulkanRenderer() = default;

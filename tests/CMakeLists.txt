@@ -499,7 +499,15 @@ target_include_directories(ArvekVulkanRendererTest
         ${PROJECT_SOURCE_DIR}/engine/src/rendering
 )
 
+add_dependencies(
+    ArvekVulkanRendererTest
+    ArvekTriangleShaders
+)
+
 add_test(
     NAME ArvekVulkanRendererTest
-    COMMAND ArvekVulkanRendererTest
+    COMMAND
+        ArvekVulkanRendererTest
+        "${TRIANGLE_VERTEX_SPV}"
+        "${TRIANGLE_FRAGMENT_SPV}"
 )
