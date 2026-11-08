@@ -19,6 +19,8 @@ add_library(ArvekEngine STATIC
     src/rendering/shader_module.cpp
     src/rendering/render_pass.cpp
     src/rendering/framebuffer.cpp
+    src/rendering/pipeline_layout.cpp
+    src/rendering/graphics_pipeline.cpp
 )
 
 add_library(Arvek::Engine ALIAS ArvekEngine)

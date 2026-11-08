@@ -427,3 +427,32 @@ add_test(
     NAME ArvekVulkanRenderPassTest
     COMMAND ArvekVulkanRenderPassTest
 )
+
+# ArvekVulkanGraphicsPipelineTest
+add_executable(ArvekVulkanGraphicsPipelineTest
+    vulkan_graphics_pipeline_test.cpp
+)
+
+target_link_libraries(ArvekVulkanGraphicsPipelineTest
+    PRIVATE
+        ArvekEngine
+        Vulkan::Vulkan
+)
+
+target_include_directories(ArvekVulkanGraphicsPipelineTest
+    PRIVATE
+        ${PROJECT_SOURCE_DIR}/engine/src/rendering
+)
+
+add_dependencies(
+    ArvekVulkanGraphicsPipelineTest
+    ArvekTriangleShaders
+)
+
+add_test(
+    NAME ArvekVulkanGraphicsPipelineTest
+    COMMAND
+        ArvekVulkanGraphicsPipelineTest
+        "${TRIANGLE_VERTEX_SPV}"
+        "${TRIANGLE_FRAGMENT_SPV}"
+)
