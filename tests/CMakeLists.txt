@@ -456,3 +456,30 @@ add_test(
         "${TRIANGLE_VERTEX_SPV}"
         "${TRIANGLE_FRAGMENT_SPV}"
 )
+
+# ArvekVulkanTriangleManualTest
+add_executable(ArvekVulkanTriangleManualTest
+    vulkan_triangle_manual_test.cpp
+)
+
+target_link_libraries(ArvekVulkanTriangleManualTest
+    PRIVATE
+        ArvekEngine
+        Vulkan::Vulkan
+)
+
+target_include_directories(ArvekVulkanTriangleManualTest
+    PRIVATE
+        ${PROJECT_SOURCE_DIR}/engine/src/rendering
+)
+
+add_dependencies(
+    ArvekVulkanTriangleManualTest
+    ArvekTriangleShaders
+)
+
+target_compile_definitions(ArvekVulkanTriangleManualTest
+    PRIVATE
+        ARVEK_TRIANGLE_VERTEX_SPV="${TRIANGLE_VERTEX_SPV}"
+        ARVEK_TRIANGLE_FRAGMENT_SPV="${TRIANGLE_FRAGMENT_SPV}"
+)
