@@ -483,3 +483,23 @@ target_compile_definitions(ArvekVulkanTriangleManualTest
         ARVEK_TRIANGLE_VERTEX_SPV="${TRIANGLE_VERTEX_SPV}"
         ARVEK_TRIANGLE_FRAGMENT_SPV="${TRIANGLE_FRAGMENT_SPV}"
 )
+
+# ArvekVulkanRendererTest
+add_executable(ArvekVulkanRendererTest
+    vulkan_renderer_test.cpp
+)
+
+target_link_libraries(ArvekVulkanRendererTest
+    PRIVATE
+        ArvekEngine
+)
+
+target_include_directories(ArvekVulkanRendererTest
+    PRIVATE
+        ${PROJECT_SOURCE_DIR}/engine/src/rendering
+)
+
+add_test(
+    NAME ArvekVulkanRendererTest
+    COMMAND ArvekVulkanRendererTest
+)

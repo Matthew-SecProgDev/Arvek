@@ -21,6 +21,7 @@ add_library(ArvekEngine STATIC
     src/rendering/framebuffer.cpp
     src/rendering/pipeline_layout.cpp
     src/rendering/graphics_pipeline.cpp
+    src/rendering/vulkan_renderer.cpp
 )
 
 add_library(Arvek::Engine ALIAS ArvekEngine)
