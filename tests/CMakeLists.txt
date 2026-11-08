@@ -406,3 +406,24 @@ add_test(
         "${TRIANGLE_VERTEX_SPV}"
         "${TRIANGLE_FRAGMENT_SPV}"
 )
+
+# ArvekVulkanRenderPassTest
+add_executable(ArvekVulkanRenderPassTest
+    vulkan_render_pass_test.cpp
+)
+
+target_link_libraries(ArvekVulkanRenderPassTest
+    PRIVATE
+        ArvekEngine
+        Vulkan::Vulkan
+)
+
+target_include_directories(ArvekVulkanRenderPassTest
+    PRIVATE
+        ${PROJECT_SOURCE_DIR}/engine/src/rendering
+)
+
+add_test(
+    NAME ArvekVulkanRenderPassTest
+    COMMAND ArvekVulkanRenderPassTest
+)
