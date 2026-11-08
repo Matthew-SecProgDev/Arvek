@@ -492,6 +492,7 @@ add_executable(ArvekVulkanRendererTest
 target_link_libraries(ArvekVulkanRendererTest
     PRIVATE
         ArvekEngine
+        Vulkan::Vulkan
 )
 
 target_include_directories(ArvekVulkanRendererTest
@@ -510,4 +511,32 @@ add_test(
         ArvekVulkanRendererTest
         "${TRIANGLE_VERTEX_SPV}"
         "${TRIANGLE_FRAGMENT_SPV}"
+)
+
+# ArvekVulkanRendererManualTest
+add_executable(ArvekVulkanRendererManualTest
+    vulkan_renderer_manual_test.cpp
+)
+
+target_link_libraries(ArvekVulkanRendererManualTest
+    PRIVATE
+        ArvekEngine
+        Vulkan::Vulkan
+)
+
+target_include_directories(ArvekVulkanRendererManualTest
+    PRIVATE
+        ${PROJECT_SOURCE_DIR}/engine/src/rendering
+)
+
+add_dependencies(
+    ArvekVulkanRendererManualTest
+    ArvekTriangleShaders
+)
+
+target_compile_definitions(
+    ArvekVulkanRendererManualTest
+    PRIVATE
+        ARVEK_TRIANGLE_VERTEX_SPV="${TRIANGLE_VERTEX_SPV}"
+        ARVEK_TRIANGLE_FRAGMENT_SPV="${TRIANGLE_FRAGMENT_SPV}"
 )

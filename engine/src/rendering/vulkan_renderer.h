@@ -1,5 +1,7 @@
 #pragma once
 
+#include <vulkan/vulkan.h>
+
 #include <memory>
 #include <vector>
 #include <cstdint>
@@ -17,6 +19,9 @@ namespace arvek
     class ShaderModule;
     class PipelineLayout;
     class GraphicsPipeline;
+    class CommandPool;
+    class Fence;
+    class Semaphore;
 
     class VulkanRenderer final
     {
@@ -31,6 +36,10 @@ namespace arvek
         VulkanRenderer& operator=(const VulkanRenderer&) = delete;
         VulkanRenderer(VulkanRenderer&&) = delete;
         VulkanRenderer& operator=(VulkanRenderer&&) = delete;
+
+        // Returns false when the swapchain needs recreation.
+        [[nodiscard]]
+        bool drawFrame();
 
     private:
         Window& window_;
@@ -52,5 +61,15 @@ namespace arvek
 
         std::unique_ptr<PipelineLayout> pipelineLayout_;
         std::unique_ptr<GraphicsPipeline> graphicsPipeline_;
+
+        std::unique_ptr<CommandPool> commandPool_;
+        std::unique_ptr<Fence> inFlightFence_;
+        std::unique_ptr<Semaphore> imageAvailable_;
+
+        std::vector<std::unique_ptr<Semaphore>> renderFinished_;
+
+        bool submissionPending_{ false };
+
+        void recordCommands(VkCommandBuffer commandBuffer, std::uint32_t imageIndex);
     };
 }
