@@ -1,6 +1,7 @@
 #pragma once
 
 #include <memory>
+#include <vector>
 
 namespace arvek
 {
@@ -9,6 +10,9 @@ namespace arvek
     class Surface;
     class PhysicalDevice;
     class Device;
+    class Swapchain;
+    class RenderPass;
+    class Framebuffer;
 
     class VulkanRenderer final
     {
@@ -28,5 +32,11 @@ namespace arvek
         std::unique_ptr<Surface> surface_;
         std::unique_ptr<PhysicalDevice> physicalDevice_;
         std::unique_ptr<Device> device_;
+
+        // Swapchain-dependent resources.
+        std::unique_ptr<Swapchain> swapchain_;
+        std::unique_ptr<RenderPass> renderPass_;
+
+        std::vector<std::unique_ptr<Framebuffer>> framebuffers_;
     };
 }
