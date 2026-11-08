@@ -114,6 +114,22 @@ namespace
             "End command buffer"
         );
     }
+
+    std::vector<std::unique_ptr<arvek::Semaphore>> createRenderFinishedSemaphores(
+        const arvek::Device& device,
+        std::size_t imageCount)
+    {
+        std::vector<std::unique_ptr<arvek::Semaphore>> semaphores;
+
+        semaphores.reserve(imageCount);
+
+        for (std::size_t i = 0; i < imageCount; ++i)
+        {
+            semaphores.push_back(std::make_unique<arvek::Semaphore>(device));
+        }
+
+        return semaphores;
+    }
 }
 
 int main()
@@ -131,7 +147,7 @@ int main()
 
             arvek::Device device(physicalDevice);
 
-            arvek::Swapchain swapchain(
+            auto swapchain = std::make_unique<arvek::Swapchain>(
                 physicalDevice,
                 device,
                 surface,
@@ -144,31 +160,82 @@ int main()
             arvek::Semaphore imageAvailable(device);
 
             // Presentation semaphores belong to swapchain images.
-            std::vector<std::unique_ptr<arvek::Semaphore>> renderFinished;
-
-            renderFinished.reserve(swapchain.images().size());
-
-            for (std::size_t i = 0; i < swapchain.images().size(); ++i)
-            {
-                renderFinished.push_back(
-                    std::make_unique<arvek::Semaphore>(device)
-                );
-            }
+            auto renderFinished = createRenderFinishedSemaphores(
+                device,
+                swapchain->images().size()
+            );
 
             const VkCommandBuffer commandBuffer = commandPool.commandBuffers().at(0);
 
             auto& window = engine.window();
 
+            auto recreateSwapchain = [&]() -> bool
+                {
+                    // A minimized window can have a zero-sized framebuffer.
+                    // Wait until it becomes drawable again.
+                    auto extent = window.framebufferExtent();
+
+                    while (extent.width == 0 || extent.height == 0)
+                    {
+                        if (window.shouldClose())
+                        {
+                            return false;
+                        }
+
+                        window.waitEvents();
+                        extent = window.framebufferExtent();
+                    }
+
+                    // Stop GPU submissions before replacing resources.
+                    check(
+                        vkDeviceWaitIdle(device.handle()),
+                        "Wait for device idle before swapchain recreation"
+                    );
+
+                    // Release existing swapchain resources first.
+                    renderFinished.clear();
+                    swapchain.reset();
+
+                    // The native window no longer has our old swapchain.
+                    swapchain = std::make_unique<arvek::Swapchain>(
+                        physicalDevice,
+                        device,
+                        surface,
+                        window
+                    );
+
+                    renderFinished = createRenderFinishedSemaphores(
+                        device,
+                        swapchain->images().size()
+                    );
+
+                    window.acknowledgeResize();
+
+                    ARV_LOG_INFO("Swapchain recreated successfully.");
+
+                    return true;
+                };
+
             bool submissionPending = false;
             std::uint64_t frameCount = 0;
+            bool recreateRequested = false;
 
             while (!window.shouldClose())
             {
                 window.pollEvents();
 
-                if (window.shouldClose())
+                if (window.wasResized() || recreateRequested)
                 {
-                    break;
+                    if (!recreateSwapchain())
+                    {
+                        break;
+                    }
+
+                    recreateRequested = false;
+                    submissionPending = false;
+
+                    // Begin the next iteration with the new swapchain.
+                    continue;
                 }
 
                 // The previous graphics submission must complete
@@ -184,7 +251,7 @@ int main()
 
                 const VkResult acquireResult = vkAcquireNextImageKHR(
                         device.handle(),
-                        swapchain.handle(),
+                        swapchain->handle(),
                         UINT64_MAX,
                         imageAvailable.handle(),
                         VK_NULL_HANDLE,
@@ -193,19 +260,17 @@ int main()
 
                 if (acquireResult == VK_ERROR_OUT_OF_DATE_KHR)
                 {
-                    ARV_LOG_INFO("Swapchain is out of date. "
-                        "Recreation will be added next."
-                    );
-                    break;
+                    recreateRequested = true;
+                    continue;
                 }
 
                 if (acquireResult != VK_SUCCESS &&
                     acquireResult != VK_SUBOPTIMAL_KHR)
                 {
-                    check(acquireResult, "Acquire image");
+                    check(acquireResult, "Acquire swapchain image");
                 }
 
-                if (imageIndex >= swapchain.images().size())
+                if (imageIndex >= swapchain->images().size())
                 {
                     throw std::runtime_error("Invalid swapchain image index!");
                 }
@@ -214,7 +279,7 @@ int main()
 
                 recordClearCommands(
                     commandBuffer,
-                    swapchain.images().at(imageIndex)
+                    swapchain->images().at(imageIndex)
                 );
 
                 const VkSemaphore waitSemaphore = imageAvailable.handle();
@@ -248,7 +313,7 @@ int main()
 
                 submissionPending = true;
 
-                const VkSwapchainKHR swapchainHandle = swapchain.handle();
+                const VkSwapchainKHR swapchainHandle = swapchain->handle();
 
                 VkPresentInfoKHR presentInfo{};
                 presentInfo.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
@@ -263,18 +328,19 @@ int main()
                         &presentInfo
                 );
 
-                if (presentResult == VK_ERROR_OUT_OF_DATE_KHR)
+                if (presentResult != VK_SUCCESS &&
+                    presentResult != VK_SUBOPTIMAL_KHR &&
+                    presentResult != VK_ERROR_OUT_OF_DATE_KHR)
                 {
-                    ARV_LOG_INFO("Swapchain became out of date "
-                        "during presentation."
-                    );
-                    break;
+                    check(presentResult, "Present swapchain image");
                 }
 
-                if (presentResult != VK_SUCCESS &&
-                    presentResult != VK_SUBOPTIMAL_KHR)
+                if (acquireResult == VK_SUBOPTIMAL_KHR ||
+                    presentResult == VK_SUBOPTIMAL_KHR ||
+                    presentResult == VK_ERROR_OUT_OF_DATE_KHR ||
+                    window.wasResized())
                 {
-                    check(presentResult, "Present image");
+                    recreateRequested = true;
                 }
 
                 ++frameCount;
