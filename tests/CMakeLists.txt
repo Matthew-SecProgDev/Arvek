@@ -303,3 +303,19 @@ target_include_directories(ArvekVulkanClearPresentManualTest
     PRIVATE
         ${PROJECT_SOURCE_DIR}/engine/src/rendering
 )
+
+# ArvekVulkanFrameLoopManualTest
+add_executable(ArvekVulkanFrameLoopManualTest
+    vulkan_frame_loop_manual_test.cpp
+)
+
+target_link_libraries(ArvekVulkanFrameLoopManualTest
+    PRIVATE
+        ArvekEngine
+        Vulkan::Vulkan
+)
+
+target_include_directories(ArvekVulkanFrameLoopManualTest
+    PRIVATE
+        ${PROJECT_SOURCE_DIR}/engine/src/rendering
+)
