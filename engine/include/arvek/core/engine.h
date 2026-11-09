@@ -8,6 +8,7 @@ namespace arvek
 	class ServiceRegistry;
 	class GlfwRuntime;
 	class Window;
+	class VulkanRenderer;
 
 	class Engine final
 	{
@@ -43,6 +44,8 @@ namespace arvek
 		std::unique_ptr<Window> window_;
 
 		State state_{ State::Constructed };
+
+		std::unique_ptr<VulkanRenderer> renderer_;
 	};
 }
 
