@@ -13,11 +13,15 @@
 #include "command_pool.h"
 #include "fence.h"
 #include "semaphore.h"
+#include <arvek/core/window.h>
+#include <arvek/core/logger.h>
 
 #include <cstdint>
 #include <string>
 #include <memory>
 #include <stdexcept>
+#include <cstddef>
+#include <vector>
 
 namespace arvek
 {
@@ -34,39 +38,6 @@ namespace arvek
 
         device_ = std::make_unique<Device>(*physicalDevice_);
 
-        swapchain_ = std::make_unique<Swapchain>(
-            *physicalDevice_,
-            *device_,
-            *surface_,
-            window_
-        );
-
-        renderPass_ = std::make_unique<RenderPass>(
-            *device_,
-            swapchain_->imageFormat()
-        );
-
-        // One framebuffer per swapchain image view.
-        const auto& imageViews = swapchain_->imageViews();
-
-        if (imageViews.empty())
-        {
-            throw std::runtime_error("Swapchain has no image views!");
-        }
-
-        framebuffers_.reserve(imageViews.size());
-
-        for (VkImageView imageView : imageViews)
-        {
-            framebuffers_.push_back(
-                std::make_unique<Framebuffer>(
-                    *device_,
-                    *renderPass_,
-                    imageView,
-                    swapchain_->extent())
-            );
-        }
-
         vertexShader_ = std::make_unique<ShaderModule>(
             *device_,
             vertexSpirv
@@ -79,14 +50,6 @@ namespace arvek
 
         pipelineLayout_ = std::make_unique<PipelineLayout>(*device_);
 
-        graphicsPipeline_ = std::make_unique<GraphicsPipeline>(
-            *device_,
-            *renderPass_,
-            *pipelineLayout_,
-            *vertexShader_,
-            *fragmentShader_
-        );
-
         commandPool_ = std::make_unique<CommandPool>(
             *device_,
             *physicalDevice_,
@@ -97,14 +60,19 @@ namespace arvek
         inFlightFence_ = std::make_unique<Fence>(*device_);
         imageAvailable_ = std::make_unique<Semaphore>(*device_);
 
-        // Presentation semaphores are associated with swapchain images
-        renderFinished_.reserve(swapchain_->images().size());
-        for (std::size_t i = 0; i < swapchain_->images().size(); ++i)
+        // Initial swapchain creation requires a drawable window.
+        const auto extent = window_.framebufferExtent();
+        if (extent.width == 0 || extent.height == 0)
         {
-            renderFinished_.push_back(
-                std::make_unique<Semaphore>(*device_)
+            throw std::runtime_error(
+                "Cannot initialize VulkanRenderer with "
+                "a zero-sized framebuffer!"
             );
         }
+
+        createSwapchainResources();
+
+        ARV_LOG_INFO("VulkanRenderer initialized.");
     }
 
     VulkanRenderer::~VulkanRenderer()
@@ -118,6 +86,12 @@ namespace arvek
 
     bool VulkanRenderer::drawFrame()
     {
+        // Handle a resize before acquiring another image
+        if (window_.wasResized())
+        {
+            return recreateSwapchain();
+        }
+
         // One frame in flight: wait before reusing
         // the command buffer and acquisition semaphore.
         if (submissionPending_)
@@ -139,7 +113,7 @@ namespace arvek
 
         if (acquireResult == VK_ERROR_OUT_OF_DATE_KHR)
         {
-            return false;
+            return recreateSwapchain();
         }
 
         if (acquireResult != VK_SUCCESS &&
@@ -159,11 +133,13 @@ namespace arvek
             );
         }
 
+        // The previous submission has completed,
+        // so the command pool can be reset.
         commandPool_->reset();
 
-        const VkCommandBuffer commandBuffer = commandPool_->commandBuffers().at(0);
+        recordCommands(imageIndex);
 
-        recordCommands(commandBuffer, imageIndex);
+        const VkCommandBuffer commandBuffer = commandPool_->commandBuffers().at(0);
 
         const VkSemaphore waitSemaphore = imageAvailable_->handle();
 
@@ -226,22 +202,23 @@ namespace arvek
             );
         }
 
-        // These results indicate that our caller should
-        // request swapchain recreation.
+        // Rebuild resources when the surface changes.
         if (acquireResult == VK_SUBOPTIMAL_KHR ||
             presentResult == VK_SUBOPTIMAL_KHR ||
-            presentResult == VK_ERROR_OUT_OF_DATE_KHR)
+            presentResult == VK_ERROR_OUT_OF_DATE_KHR ||
+            window_.wasResized())
         {
-            return false;
+            return recreateSwapchain();
         }
 
         return true;
     }
 
-    void VulkanRenderer::recordCommands(
-        VkCommandBuffer commandBuffer,
-        std::uint32_t imageIndex)
+    void VulkanRenderer::recordCommands(std::uint32_t imageIndex)
     {
+        // Command buffer belongs to this renderer.
+        const VkCommandBuffer commandBuffer = commandPool_->commandBuffers().at(0);
+
         VkCommandBufferBeginInfo beginInfo{};
         beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
         beginInfo.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
@@ -281,6 +258,7 @@ namespace arvek
 
         const VkExtent2D extent = swapchain_->extent();
 
+        // Dynamic viewport
         VkViewport viewport{};
         viewport.x = 0.0f;
         viewport.y = 0.0f;
@@ -296,6 +274,7 @@ namespace arvek
             &viewport
         );
 
+        // Dynamic scissor
         VkRect2D scissor{};
         scissor.offset = { 0, 0 };
         scissor.extent = extent;
@@ -307,6 +286,7 @@ namespace arvek
             &scissor
         );
 
+        // Draw a triangle generated by gl_VertexIndex
         vkCmdDraw(
             commandBuffer,
             3,
@@ -323,5 +303,121 @@ namespace arvek
                 "Failed to end Vulkan command buffer!"
             );
         }
+    }
+
+    void VulkanRenderer::createSwapchainResources()
+    {
+        swapchain_ = std::make_unique<Swapchain>(
+            *physicalDevice_,
+            *device_,
+            *surface_,
+            window_
+        );
+
+        renderPass_ = std::make_unique<RenderPass>(
+            *device_,
+            swapchain_->imageFormat()
+        );
+
+        graphicsPipeline_ = std::make_unique<GraphicsPipeline>(
+            *device_,
+            *renderPass_,
+            *pipelineLayout_,
+            *vertexShader_,
+            *fragmentShader_
+        );
+
+        // One framebuffer per swapchain image view.
+        const auto& imageViews = swapchain_->imageViews();
+
+        if (imageViews.empty())
+        {
+            throw std::runtime_error("Swapchain has no image views!");
+        }
+
+        framebuffers_.reserve(imageViews.size());
+
+        for (VkImageView imageView : imageViews)
+        {
+            framebuffers_.push_back(
+                std::make_unique<Framebuffer>(
+                    *device_,
+                    *renderPass_,
+                    imageView,
+                    swapchain_->extent())
+            );
+        }
+
+        // Presentation semaphores are associated with swapchain images
+        renderFinished_.reserve(swapchain_->images().size());
+        for (std::size_t i = 0; i < swapchain_->images().size(); ++i)
+        {
+            renderFinished_.push_back(
+                std::make_unique<Semaphore>(*device_)
+            );
+        }
+    }
+
+    void VulkanRenderer::destroySwapchainResources()
+    {
+        // Framebuffers reference swapchain image views.
+        framebuffers_.clear();
+
+        // Graphics pipeline was created for this render pass.
+        graphicsPipeline_.reset();
+
+        renderPass_.reset();
+
+        // Presentation semaphores belong to this swapchain generation.
+        renderFinished_.clear();
+
+        // Releases image views and the swapchain itself.
+        swapchain_.reset();
+    }
+
+    bool VulkanRenderer::recreateSwapchain()
+    {
+        auto extent = window_.framebufferExtent();
+        // Do not create a swapchain with a zero-sized framebuffer.
+        while (extent.width == 0 || extent.height == 0)
+        {
+            if (window_.shouldClose())
+            {
+                return false;
+            }
+
+            window_.waitEvents();
+            extent = window_.framebufferExtent();
+        }
+
+        if (window_.shouldClose())
+        {
+            return false;
+        }
+
+        // Currently the synchronization strategy in our prototype involves
+        // waiting until the graphics device to become idle state.
+        const VkResult result = vkDeviceWaitIdle(device_->handle());
+        if (result != VK_SUCCESS)
+        {
+            throw std::runtime_error(
+                "Failed to wait for device before "
+                "swapchain recreation. VkResult: " +
+                std::to_string(static_cast<int>(result))
+            );
+        }
+
+        destroySwapchainResources();
+
+        createSwapchainResources();
+
+        // The old command buffer is no longer executing.
+        submissionPending_ = false;
+
+        window_.acknowledgeResize();
+
+        ARV_LOG_INFO("VulkanRenderer swapchain recreated.");
+
+        return true;
     }
 }

@@ -77,17 +77,8 @@ int main()
             {
                 window.pollEvents();
 
-                if (window.wasResized())
-                {
-                    ARV_LOG_INFO(
-                        "Window resized; renderer recreation will be added next."
-                    );
-                    break;
-                }
-
                 if (!renderer.drawFrame())
                 {
-                    ARV_LOG_INFO("Swapchain needs recreation.");
                     break;
                 }
             }

@@ -1,7 +1,5 @@
 #pragma once
 
-#include <vulkan/vulkan.h>
-
 #include <memory>
 #include <vector>
 #include <cstdint>
@@ -37,7 +35,9 @@ namespace arvek
         VulkanRenderer(VulkanRenderer&&) = delete;
         VulkanRenderer& operator=(VulkanRenderer&&) = delete;
 
-        // Returns false when the swapchain needs recreation.
+        // Returns true which means the renderer is still operational, 
+        // including when a frame was skipped for recreation, otherwise
+        // rendering should stop because the window is closing.
         [[nodiscard]]
         bool drawFrame();
 
@@ -58,7 +58,6 @@ namespace arvek
         // Shader and graphics pipeline resources
         std::unique_ptr<ShaderModule> vertexShader_;
         std::unique_ptr<ShaderModule> fragmentShader_;
-
         std::unique_ptr<PipelineLayout> pipelineLayout_;
         std::unique_ptr<GraphicsPipeline> graphicsPipeline_;
 
@@ -70,6 +69,12 @@ namespace arvek
 
         bool submissionPending_{ false };
 
-        void recordCommands(VkCommandBuffer commandBuffer, std::uint32_t imageIndex);
+        void recordCommands(std::uint32_t imageIndex);
+
+        void createSwapchainResources();
+        void destroySwapchainResources();
+
+        [[nodiscard]]
+        bool recreateSwapchain();
     };
 }

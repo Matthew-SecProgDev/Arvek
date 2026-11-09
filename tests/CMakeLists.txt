@@ -492,7 +492,6 @@ add_executable(ArvekVulkanRendererTest
 target_link_libraries(ArvekVulkanRendererTest
     PRIVATE
         ArvekEngine
-        Vulkan::Vulkan
 )
 
 target_include_directories(ArvekVulkanRendererTest
@@ -521,7 +520,6 @@ add_executable(ArvekVulkanRendererManualTest
 target_link_libraries(ArvekVulkanRendererManualTest
     PRIVATE
         ArvekEngine
-        Vulkan::Vulkan
 )
 
 target_include_directories(ArvekVulkanRendererManualTest
