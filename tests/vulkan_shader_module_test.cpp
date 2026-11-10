@@ -61,7 +61,7 @@ int main(int argc, char* argv[])
         const auto fragmentCode = readSpirv(argv[2]);
 
         arvek::Engine engine;
-        engine.initialize();
+        engine.initialize(false);
 
         {
             arvek::Instance instance(true);

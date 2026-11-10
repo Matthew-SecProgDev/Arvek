@@ -330,11 +330,11 @@ find_program(GLSLC_EXECUTABLE
 )
 
 set(TRIANGLE_SHADER_SOURCE_DIR
-    "${CMAKE_CURRENT_SOURCE_DIR}/shaders"
+    "${PROJECT_SOURCE_DIR}/engine/shaders"
 )
 
 set(TRIANGLE_SHADER_BINARY_DIR
-    "${CMAKE_CURRENT_BINARY_DIR}/shaders"
+    "${PROJECT_SOURCE_DIR}/engine/shaders"
 )
 
 set(TRIANGLE_VERTEX_SPV

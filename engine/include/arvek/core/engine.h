@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <memory>
+#include <stdexcept>
 
 namespace arvek
 {
@@ -21,7 +22,7 @@ namespace arvek
 		Engine(Engine&&) = delete;
 		Engine& operator=(Engine&&) = delete;
 
-		void initialize();
+		void initialize(bool enableRenderer);
 
 		template<typename TApp>
 		void run();

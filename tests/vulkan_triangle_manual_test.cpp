@@ -184,7 +184,7 @@ int main()
         const auto fragmentCode = readSpirv(ARVEK_TRIANGLE_FRAGMENT_SPV);
 
         arvek::Engine engine;
-        engine.initialize();
+        engine.initialize(false);
 
         {
             arvek::Instance instance(true);

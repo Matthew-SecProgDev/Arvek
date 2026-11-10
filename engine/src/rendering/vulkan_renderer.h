@@ -24,10 +24,11 @@ namespace arvek
     class VulkanRenderer final
     {
     public:
-        VulkanRenderer(Window& window,
+        explicit VulkanRenderer(Window& window);
+        VulkanRenderer(
+            Window& window,
             const std::vector<std::uint32_t>& vertexSpirv,
             const std::vector<std::uint32_t>& fragmentSpirv);
-
         ~VulkanRenderer();
 
         VulkanRenderer(const VulkanRenderer&) = delete;
@@ -76,5 +77,9 @@ namespace arvek
 
         [[nodiscard]]
         bool recreateSwapchain();
+
+        void createTriangleResources(
+            const std::vector<std::uint32_t>& vertexSpirv,
+            const std::vector<std::uint32_t>& fragmentSpirv);
     };
 }

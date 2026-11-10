@@ -15,7 +15,7 @@ int main()
     try
     {
         arvek::Engine engine;
-        engine.initialize();
+        engine.initialize(false);
 
         {
             arvek::Instance instance(true);

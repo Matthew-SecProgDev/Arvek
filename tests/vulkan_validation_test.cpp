@@ -14,7 +14,7 @@ int main()
     try
     {
         arvek::Engine engine;
-        engine.initialize();
+        engine.initialize(false);
 
         {
             // Explicitly require validation in Debug and Release.

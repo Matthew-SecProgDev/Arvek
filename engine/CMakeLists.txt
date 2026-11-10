@@ -26,11 +26,15 @@ add_library(ArvekEngine STATIC
 
 add_library(Arvek::Engine ALIAS ArvekEngine)
 
-target_compile_features(ArvekEngine PUBLIC cxx_std_17)
+target_compile_features(ArvekEngine
+    PUBLIC cxx_std_17
+)
 
 target_include_directories(ArvekEngine
     PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/rendering
 )
 
 target_link_libraries(ArvekEngine
