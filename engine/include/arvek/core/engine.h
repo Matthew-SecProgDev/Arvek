@@ -1,6 +1,6 @@
 #pragma once
 
-#include <iostream>
+#include <type_traits>
 #include <memory>
 #include <stdexcept>
 
@@ -10,6 +10,7 @@ namespace arvek
 	class GlfwRuntime;
 	class Window;
 	class VulkanRenderer;
+	class Application;
 
 	class Engine final
 	{
@@ -23,14 +24,13 @@ namespace arvek
 		Engine& operator=(Engine&&) = delete;
 
 		void initialize();
+		void shutdown();
 
 		template<typename TApp>
 		void run();
 
 		[[nodiscard]]
 		Window& window();
-
-		void shutdown();
 
 	private:
 		enum class State
@@ -47,12 +47,24 @@ namespace arvek
 		State state_{ State::Constructed };
 
 		std::unique_ptr<VulkanRenderer> renderer_;
+
+		void runApplication(Application& app);
 	};
 }
 
 template <typename TApp>
 void arvek::Engine::run()
 {
+	static_assert(
+		std::is_base_of_v<Application, TApp>,
+		"TApp must inherit from arvek::Application!"
+		);
+
+	static_assert(
+		std::is_default_constructible_v<TApp>,
+		"TApp must be default-constructible!"
+		);
+
 	if (state_ != State::Initialized)
 	{
 		throw std::logic_error(
@@ -60,5 +72,6 @@ void arvek::Engine::run()
 		);
 	}
 
-	std::cout << "Arvek Engine run!\n";
+	TApp app;
+	runApplication(app);
 }

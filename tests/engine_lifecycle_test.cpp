@@ -1,14 +1,49 @@
 #include <arvek/core/engine.h>
 #include <arvek/core/window.h>
+#include <arvek/core/application.h>
+#include <arvek/core/application_startup_context.h>
+#include <arvek/core/service_registrar.h>
+#include <arvek/core/service_provider.h>
 
 #include <stdexcept>
 #include <cstdlib>
 #include <iostream>
+#include <memory>
 
 namespace
 {
-    class MyGame
+    struct TestService
     {
+        int value{ 42 };
+    };
+
+    class MyGame : public arvek::Application
+    {
+    public:
+        inline static bool started = false;
+        inline static bool stopped = false;
+
+        void onStart(arvek::ApplicationStartupContext& context) override
+        {
+            started = true;
+
+            // Register a game-owned service.
+            context.serviceRegistrar()
+                .addGameService(std::make_unique<TestService>());
+
+            // Verify the service is available.
+            auto& service = context.serviceProvider().require<TestService>();
+
+            if (service.value != 42)
+            {
+                throw std::runtime_error("Invalid game service value!");
+            }
+        }
+
+        void onShutdown() override
+        {
+            stopped = true;
+        }
     };
 }
 

@@ -7,6 +7,10 @@
 #include "window_config.h"
 #include "../rendering/vulkan_renderer.h"
 #include "window_factory.h"
+#include <arvek/core/application.h>
+#include <arvek/core/application_startup_context.h>
+#include <arvek/core/service_registrar.h>
+#include <arvek/core/service_provider.h>
 
 #include <cstdint>
 #include <memory>
@@ -84,5 +88,27 @@ namespace arvek
         }
 
         return *window_;
+    }
+
+    void Engine::runApplication(Application& app)
+    {
+        if (state_ != State::Initialized || !serviceRegistry_)
+        {
+            throw std::logic_error("Engine is not initialized!");
+        }
+
+        auto provider = serviceRegistry_->provider();
+        auto registrar = serviceRegistry_->gameRegistrar();
+
+        ApplicationStartupContext context(
+            provider,
+            registrar
+        );
+
+        app.onStart(context);
+
+        // The rendering loop will be integrated next.
+
+        app.onShutdown();
     }
 }
