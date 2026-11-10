@@ -8,6 +8,7 @@ add_library(ArvekEngine STATIC
     src/core/glfw_runtime.cpp
     src/core/glfw_window_backend.cpp
     src/core/window.cpp
+    src/core/window_factory.cpp
     src/rendering/instance.cpp
     src/rendering/surface.cpp
     src/rendering/physical_device.cpp

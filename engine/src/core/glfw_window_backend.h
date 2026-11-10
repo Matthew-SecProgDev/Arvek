@@ -1,13 +1,14 @@
 #pragma once
 
 #include "window_backend.h"
-#include "window_config.h"
 #include "../rendering/surface_provider.h"
 
 struct GLFWwindow;
 
 namespace arvek
 {
+    struct WindowConfig;
+
     class GlfwWindowBackend final : public WindowBackend, public SurfaceProvider
     {
     public:

@@ -1,5 +1,7 @@
 #include "glfw_window_backend.h"
 
+#include "window_config.h"
+
 #include <GLFW/glfw3.h>
 
 #include <cstdint>

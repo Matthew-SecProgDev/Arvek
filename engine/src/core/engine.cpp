@@ -4,9 +4,9 @@
 #include <arvek/core/window.h>
 #include "service_registry.h"
 #include "glfw_runtime.h"
-#include "glfw_window_backend.h"
 #include "window_config.h"
 #include "../rendering/vulkan_renderer.h"
+#include "window_factory.h"
 
 #include <cstdint>
 #include <memory>
@@ -39,8 +39,7 @@ namespace arvek
         config.height = 768;
         config.title = "Arvek Engine";
 
-        auto backend = std::make_unique<GlfwWindowBackend>(config);
-        auto window = std::unique_ptr<Window>(new Window(std::move(backend)));
+        auto window = WindowFactory::create(config);
 
         std::unique_ptr<VulkanRenderer> renderer;
 

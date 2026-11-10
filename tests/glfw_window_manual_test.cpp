@@ -1,5 +1,6 @@
 #include "glfw_runtime.h"
 #include "glfw_window_backend.h"
+#include "window_config.h"
 
 #include <exception>
 #include <iostream>

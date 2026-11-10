@@ -148,7 +148,7 @@ add_executable(ArvekVulkanSurfaceTest
 
 target_link_libraries(ArvekVulkanSurfaceTest
     PRIVATE
-        ArvekEngine
+        ArvekWindowTestSupport
         Vulkan::Vulkan
 )
 
@@ -537,4 +537,24 @@ target_compile_definitions(
     PRIVATE
         ARVEK_TRIANGLE_VERTEX_SPV="${TRIANGLE_VERTEX_SPV}"
         ARVEK_TRIANGLE_FRAGMENT_SPV="${TRIANGLE_FRAGMENT_SPV}"
+)
+
+# ArvekWindowTestSupport
+add_library(ArvekWindowTestSupport STATIC
+    support/window_test_fixture.cpp
+)
+
+target_compile_features(ArvekWindowTestSupport
+    PRIVATE cxx_std_17
+)
+
+target_link_libraries(ArvekWindowTestSupport
+    PUBLIC ArvekEngine
+)
+
+target_include_directories(ArvekWindowTestSupport
+    PUBLIC
+        ${CMAKE_CURRENT_SOURCE_DIR}/support
+    PRIVATE
+        ${PROJECT_SOURCE_DIR}/engine/src/core
 )
