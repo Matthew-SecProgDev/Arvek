@@ -127,7 +127,7 @@ add_executable(ArvekVulkanInstanceTest
 
 target_link_libraries(ArvekVulkanInstanceTest
     PRIVATE
-        ArvekEngine
+        ArvekWindowTestSupport
         Vulkan::Vulkan
 )
 
@@ -169,7 +169,7 @@ add_executable(ArvekVulkanPhysicalDeviceTest
 
 target_link_libraries(ArvekVulkanPhysicalDeviceTest
     PRIVATE
-        ArvekEngine
+        ArvekWindowTestSupport
         Vulkan::Vulkan
 )
 
@@ -190,7 +190,7 @@ add_executable(ArvekVulkanDeviceTest
 
 target_link_libraries(ArvekVulkanDeviceTest
     PRIVATE
-        ArvekEngine
+        ArvekWindowTestSupport
         Vulkan::Vulkan
 )
 
@@ -211,7 +211,7 @@ add_executable(ArvekVulkanValidationTest
 
 target_link_libraries(ArvekVulkanValidationTest
     PRIVATE
-        ArvekEngine
+        ArvekWindowTestSupport
         Vulkan::Vulkan
 )
 
@@ -232,7 +232,7 @@ add_executable(ArvekVulkanSwapchainTest
 
 target_link_libraries(ArvekVulkanSwapchainTest
     PRIVATE
-        ArvekEngine
+        ArvekWindowTestSupport
         Vulkan::Vulkan
 )
 
@@ -253,7 +253,7 @@ add_executable(ArvekVulkanCommandPoolTest
 
 target_link_libraries(ArvekVulkanCommandPoolTest
     PRIVATE
-        ArvekEngine
+        ArvekWindowTestSupport
         Vulkan::Vulkan
 )
 
@@ -274,7 +274,7 @@ add_executable(ArvekVulkanQueueSubmissionTest
 
 target_link_libraries(ArvekVulkanQueueSubmissionTest
     PRIVATE
-        ArvekEngine
+        ArvekWindowTestSupport
         Vulkan::Vulkan
 )
 
@@ -295,7 +295,7 @@ add_executable(ArvekVulkanClearPresentManualTest
 
 target_link_libraries(ArvekVulkanClearPresentManualTest
     PRIVATE
-        ArvekEngine
+        ArvekWindowTestSupport
         Vulkan::Vulkan
 )
 
@@ -311,7 +311,7 @@ add_executable(ArvekVulkanFrameLoopManualTest
 
 target_link_libraries(ArvekVulkanFrameLoopManualTest
     PRIVATE
-        ArvekEngine
+        ArvekWindowTestSupport
         Vulkan::Vulkan
 )
 
@@ -384,7 +384,7 @@ add_executable(ArvekVulkanShaderModuleTest
 
 target_link_libraries(ArvekVulkanShaderModuleTest
     PRIVATE
-        ArvekEngine
+        ArvekWindowTestSupport
         Vulkan::Vulkan
 )
 
@@ -414,7 +414,7 @@ add_executable(ArvekVulkanRenderPassTest
 
 target_link_libraries(ArvekVulkanRenderPassTest
     PRIVATE
-        ArvekEngine
+        ArvekWindowTestSupport
         Vulkan::Vulkan
 )
 
@@ -435,7 +435,7 @@ add_executable(ArvekVulkanGraphicsPipelineTest
 
 target_link_libraries(ArvekVulkanGraphicsPipelineTest
     PRIVATE
-        ArvekEngine
+        ArvekWindowTestSupport
         Vulkan::Vulkan
 )
 
@@ -464,7 +464,7 @@ add_executable(ArvekVulkanTriangleManualTest
 
 target_link_libraries(ArvekVulkanTriangleManualTest
     PRIVATE
-        ArvekEngine
+        ArvekWindowTestSupport
         Vulkan::Vulkan
 )
 
@@ -491,7 +491,7 @@ add_executable(ArvekVulkanRendererTest
 
 target_link_libraries(ArvekVulkanRendererTest
     PRIVATE
-        ArvekEngine
+        ArvekWindowTestSupport
 )
 
 target_include_directories(ArvekVulkanRendererTest
@@ -519,7 +519,7 @@ add_executable(ArvekVulkanRendererManualTest
 
 target_link_libraries(ArvekVulkanRendererManualTest
     PRIVATE
-        ArvekEngine
+        ArvekWindowTestSupport
 )
 
 target_include_directories(ArvekVulkanRendererManualTest

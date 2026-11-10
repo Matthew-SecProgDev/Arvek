@@ -1,6 +1,6 @@
-#include <arvek/core/engine.h>
 #include <arvek/core/logger.h>
 #include "vulkan_renderer.h"
+#include "window_test_fixture.h"
 
 #include <cstdlib>
 #include <cstdint>
@@ -57,23 +57,18 @@ int main(int argc, char* argv[])
         const auto vertexCode = readSpirv(argv[1]);
         const auto fragmentCode = readSpirv(argv[2]);
 
-        arvek::Engine engine;
-        engine.initialize(false);
+        arvek::WindowTestFixture fixture;
 
         {
             // Renderer is created after the window.
             arvek::VulkanRenderer renderer(
-                engine.window(),
+                fixture.window(),
                 vertexCode,
                 fragmentCode
             );
 
             ARV_LOG_INFO("VulkanRenderer initialized successfully.");
         }
-
-        // Renderer and its Vulkan resources are destroyed
-        // before the engine destroys its window.
-        engine.shutdown();
 
         ARV_LOG_INFO("VulkanRenderer destroyed successfully.");
     }

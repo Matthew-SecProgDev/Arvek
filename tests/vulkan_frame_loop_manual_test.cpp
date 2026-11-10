@@ -1,4 +1,3 @@
-#include <arvek/core/engine.h>
 #include <arvek/core/logger.h>
 #include <arvek/core/window.h>
 #include "command_pool.h"
@@ -9,6 +8,7 @@
 #include "semaphore.h"
 #include "surface.h"
 #include "swapchain.h"
+#include "window_test_fixture.h"
 
 #include <exception>
 #include <stdexcept>
@@ -136,12 +136,11 @@ int main()
 {
     try
     {
-        arvek::Engine engine;
-        engine.initialize(false);
+        arvek::WindowTestFixture fixture;
 
         {
             arvek::Instance instance(true);
-            arvek::Surface surface(engine.window(), instance);
+            arvek::Surface surface(fixture.window(), instance);
 
             arvek::PhysicalDevice physicalDevice(instance, surface);
 
@@ -151,7 +150,7 @@ int main()
                 physicalDevice,
                 device,
                 surface,
-                engine.window()
+                fixture.window()
             );
 
             arvek::CommandPool commandPool(device, physicalDevice, 1);
@@ -167,7 +166,7 @@ int main()
 
             const VkCommandBuffer commandBuffer = commandPool.commandBuffers().at(0);
 
-            auto& window = engine.window();
+            auto& window = fixture.window();
 
             auto recreateSwapchain = [&]() -> bool
                 {
@@ -369,8 +368,6 @@ int main()
                 std::to_string(frameCount)
             );
         }
-
-        engine.shutdown();
     }
     catch (const std::exception& e)
     {

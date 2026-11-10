@@ -1,10 +1,10 @@
-#include <arvek/core/engine.h>
 #include <arvek/core/logger.h>
 #include "device.h"
 #include "instance.h"
 #include "physical_device.h"
 #include "surface.h"
 #include "swapchain.h"
+#include "window_test_fixture.h"
 
 #include <exception>
 #include <string>
@@ -14,13 +14,12 @@ int main()
 {
     try
     {
-        arvek::Engine engine;
-        engine.initialize(false);
+        arvek::WindowTestFixture fixture;
 
         {
             arvek::Instance instance(true);
 
-            arvek::Surface surface(engine.window(), instance);
+            arvek::Surface surface(fixture.window(), instance);
 
             arvek::PhysicalDevice physicalDevice(instance, surface);
 
@@ -30,7 +29,7 @@ int main()
                 physicalDevice,
                 device,
                 surface,
-                engine.window()
+                fixture.window()
             );
 
             if (swapchain.handle() == VK_NULL_HANDLE)
@@ -59,12 +58,8 @@ int main()
                 return EXIT_FAILURE;
             }
 
-            ARV_LOG_INFO(
-                "Vulkan swapchain and image views created successfully."
-            );
+            ARV_LOG_INFO("Vulkan swapchain and image views created successfully.");
         }
-
-        engine.shutdown();
     }
     catch (const std::exception& e)
     {

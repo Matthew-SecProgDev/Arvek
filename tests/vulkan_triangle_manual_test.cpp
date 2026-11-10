@@ -1,4 +1,3 @@
-#include <arvek/core/engine.h>
 #include <arvek/core/logger.h>
 #include <arvek/core/window.h>
 #include "command_pool.h"
@@ -14,6 +13,7 @@
 #include "shader_module.h"
 #include "surface.h"
 #include "swapchain.h"
+#include "window_test_fixture.h"
 
 #include <cstdint>
 #include <exception>
@@ -183,13 +183,12 @@ int main()
         const auto vertexCode = readSpirv(ARVEK_TRIANGLE_VERTEX_SPV);
         const auto fragmentCode = readSpirv(ARVEK_TRIANGLE_FRAGMENT_SPV);
 
-        arvek::Engine engine;
-        engine.initialize(false);
+        arvek::WindowTestFixture fixture;
 
         {
             arvek::Instance instance(true);
 
-            arvek::Surface surface(engine.window(), instance);
+            arvek::Surface surface(fixture.window(), instance);
 
             arvek::PhysicalDevice physicalDevice(instance, surface);
 
@@ -208,7 +207,7 @@ int main()
 
             const VkCommandBuffer commandBuffer = commandPool.commandBuffers().at(0);
 
-            auto& window = engine.window();
+            auto& window = fixture.window();
 
             // Resources that depend on the swapchain.
             std::unique_ptr<arvek::Swapchain> swapchain;
@@ -472,8 +471,6 @@ int main()
                 + std::to_string(frameCount)
             );
         }
-
-        engine.shutdown();
     }
     catch (const std::exception& e)
     {

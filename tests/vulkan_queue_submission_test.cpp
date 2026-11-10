@@ -1,4 +1,3 @@
-#include <arvek/core/engine.h>
 #include <arvek/core/logger.h>
 #include "command_pool.h"
 #include "device.h"
@@ -6,6 +5,7 @@
 #include "instance.h"
 #include "physical_device.h"
 #include "surface.h"
+#include "window_test_fixture.h"
 
 #include <exception>
 #include <stdexcept>
@@ -16,13 +16,12 @@ int main()
 {
     try
     {
-        arvek::Engine engine;
-        engine.initialize(false);
+        arvek::WindowTestFixture fixture;
 
         {
             arvek::Instance instance(true);
 
-            arvek::Surface surface(engine.window(), instance);
+            arvek::Surface surface(fixture.window(), instance);
 
             arvek::PhysicalDevice physicalDevice(instance, surface);
 
@@ -76,8 +75,6 @@ int main()
 
             ARV_LOG_INFO("Vulkan queue submission and fence synchronization passed.");
         }
-
-        engine.shutdown();
     }
     catch (const std::exception& e)
     {

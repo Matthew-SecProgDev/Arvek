@@ -1,5 +1,5 @@
-#include <arvek/core/engine.h>
 #include "instance.h"
+#include "window_test_fixture.h"
 
 #include <exception>
 #include <iostream>
@@ -9,8 +9,7 @@ int main()
 {
     try
     {
-        arvek::Engine engine;
-        engine.initialize(false);
+        arvek::WindowTestFixture fixture;
 
         {
             arvek::Instance instance;
@@ -23,11 +22,6 @@ int main()
 
             std::cout << "Vulkan instance created successfully\n";
         }
-
-        // Vulkan instance is destroyed before Engine,
-        // so the GLFW runtime remains initialized.
-
-        engine.shutdown();
     }
     catch (const std::exception& e)
     {

@@ -1,9 +1,9 @@
-#include <arvek/core/engine.h>
 #include <arvek/core/logger.h>
 #include "instance.h"
 #include "surface.h"
 #include "physical_device.h"
 #include "device.h"
+#include "window_test_fixture.h"
 
 #include <exception>
 #include <string>
@@ -13,13 +13,12 @@ int main()
 {
     try
     {
-        arvek::Engine engine;
-        engine.initialize(false);
+        arvek::WindowTestFixture fixture;
 
         {
             arvek::Instance instance;
 
-            arvek::Surface surface(engine.window(), instance);
+            arvek::Surface surface(fixture.window(), instance);
 
             arvek::PhysicalDevice physicalDevice(instance, surface);
 
@@ -49,9 +48,6 @@ int main()
                 )
             );
         }
-
-        // All Vulkan objects have been destroyed.
-        engine.shutdown();
     }
     catch (const std::exception& e)
     {

@@ -1,8 +1,8 @@
-#include <arvek/core/engine.h>
 #include <arvek/core/logger.h>
 #include "instance.h"
 #include "surface.h"
 #include "physical_device.h"
+#include "window_test_fixture.h"
 
 #include <exception>
 #include <cstdlib>
@@ -12,12 +12,11 @@ int main()
 {
     try
     {
-        arvek::Engine engine;
-        engine.initialize(false);
+        arvek::WindowTestFixture fixture;
 
         {
             arvek::Instance instance;
-            arvek::Surface surface(engine.window(), instance);
+            arvek::Surface surface(fixture.window(), instance);
             arvek::PhysicalDevice device(instance, surface);
 
             if (device.handle() == VK_NULL_HANDLE)
@@ -40,8 +39,6 @@ int main()
                 std::to_string(device.presentationFamilyIndex())
             );
         }
-
-        engine.shutdown();
     }
     catch (const std::exception& e)
     {

@@ -1,4 +1,3 @@
-#include <arvek/core/engine.h>
 #include <arvek/core/logger.h>
 #include "device.h"
 #include "framebuffer.h"
@@ -7,6 +6,7 @@
 #include "render_pass.h"
 #include "surface.h"
 #include "swapchain.h"
+#include "window_test_fixture.h"
 
 #include <exception>
 #include <memory>
@@ -19,13 +19,12 @@ int main()
 {
     try
     {
-        arvek::Engine engine;
-        engine.initialize(false);
+        arvek::WindowTestFixture fixture;
 
         {
             arvek::Instance instance(true);
 
-            arvek::Surface surface(engine.window(), instance);
+            arvek::Surface surface(fixture.window(), instance);
 
             arvek::PhysicalDevice physicalDevice(instance, surface);
 
@@ -35,7 +34,7 @@ int main()
                 physicalDevice,
                 device,
                 surface,
-                engine.window()
+                fixture.window()
             );
 
             arvek::RenderPass renderPass(
@@ -76,8 +75,6 @@ int main()
                 "Vulkan render pass and framebuffers created successfully."
             );
         }
-
-        engine.shutdown();
     }
     catch (const std::exception& e)
     {

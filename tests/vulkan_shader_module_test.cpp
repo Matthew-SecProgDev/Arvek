@@ -1,10 +1,10 @@
-#include <arvek/core/engine.h>
 #include <arvek/core/logger.h>
 #include "device.h"
 #include "instance.h"
 #include "physical_device.h"
 #include "shader_module.h"
 #include "surface.h"
+#include "window_test_fixture.h"
 
 #include <cstdint>
 #include <exception>
@@ -60,13 +60,12 @@ int main(int argc, char* argv[])
         const auto vertexCode = readSpirv(argv[1]);
         const auto fragmentCode = readSpirv(argv[2]);
 
-        arvek::Engine engine;
-        engine.initialize(false);
+        arvek::WindowTestFixture fixture;
 
         {
             arvek::Instance instance(true);
 
-            arvek::Surface surface(engine.window(), instance);
+            arvek::Surface surface(fixture.window(), instance);
 
             arvek::PhysicalDevice physicalDevice(instance, surface);
 
@@ -84,8 +83,6 @@ int main(int argc, char* argv[])
 
             ARV_LOG_INFO("Vertex and fragment shader modules created successfully.");
         }
-
-        engine.shutdown();
     }
     catch (const std::exception& e)
     {

@@ -1,10 +1,10 @@
-#include <arvek/core/engine.h>
 #include <arvek/core/logger.h>
 #include "command_pool.h"
 #include "device.h"
 #include "instance.h"
 #include "physical_device.h"
 #include "surface.h"
+#include "window_test_fixture.h"
 
 #include <exception>
 #include <string>
@@ -14,13 +14,12 @@ int main()
 {
     try
     {
-        arvek::Engine engine;
-        engine.initialize(false);
+        arvek::WindowTestFixture fixture;
 
         {
             arvek::Instance instance(true);
 
-            arvek::Surface surface(engine.window(), instance);
+            arvek::Surface surface(fixture.window(), instance);
 
             arvek::PhysicalDevice physicalDevice(instance, surface);
 
@@ -65,12 +64,8 @@ int main()
             // been submitted, so resetting is safe.
             commandPool.reset();
 
-            ARV_LOG_INFO(
-                "Vulkan command pool and buffers initialized."
-            );
+            ARV_LOG_INFO("Vulkan command pool and buffers initialized.");
         }
-
-        engine.shutdown();
     }
     catch (const std::exception& e)
     {
