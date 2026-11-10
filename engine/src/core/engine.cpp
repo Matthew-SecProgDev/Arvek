@@ -21,7 +21,7 @@ namespace arvek
         shutdown();
     }
 
-    void Engine::initialize(bool enableRenderer)
+    void Engine::initialize()
     {
         if(state_ != State::Constructed)
         {
@@ -41,12 +41,7 @@ namespace arvek
 
         auto window = WindowFactory::create(config);
 
-        std::unique_ptr<VulkanRenderer> renderer;
-
-        if (enableRenderer)
-        {
-            renderer = std::make_unique<VulkanRenderer>(*window);
-        }
+        auto renderer = std::make_unique<VulkanRenderer>(*window);
 
         serviceRegistry_ = std::move(registry);
         glfwRuntime_ = std::move(runtime);

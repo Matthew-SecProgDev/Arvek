@@ -16,7 +16,7 @@ int main()
             arvek::WindowConfig config;
             config.width = 1024;
             config.height = 768;
-            config.title = "Arvek - GLFW Test";
+            config.title = "Arvek GLFW Test";
 
             arvek::GlfwWindowBackend window(config);
 

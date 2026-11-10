@@ -170,7 +170,8 @@ int main()
 
         lifetimeRegistry.addEngineService(
             std::make_unique<TrackedService>(
-                destructionOrder, 1
+                destructionOrder,
+                1
             )
         );
 

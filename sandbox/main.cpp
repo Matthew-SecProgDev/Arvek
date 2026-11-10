@@ -12,7 +12,7 @@ int main()
     {
         arvek::Engine engine;
 
-        engine.initialize(true);
+        engine.initialize();
 
         auto& window = engine.window();
 

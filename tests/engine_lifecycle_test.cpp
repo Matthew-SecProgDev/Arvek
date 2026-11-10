@@ -23,7 +23,7 @@ int main()
 
     try
     {
-        engine.initialize(true);
+        engine.initialize();
     }
     catch (const std::logic_error&)
     {
@@ -51,7 +51,7 @@ int main()
 
     try
     {
-        engine.initialize(true);
+        engine.initialize();
     }
     catch (const std::logic_error&)
     {
@@ -128,7 +128,7 @@ int main()
 
     try
     {
-        engine.initialize(true);
+        engine.initialize();
     }
     catch (const std::logic_error&)
     {

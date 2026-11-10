@@ -22,7 +22,7 @@ namespace arvek
 		Engine(Engine&&) = delete;
 		Engine& operator=(Engine&&) = delete;
 
-		void initialize(bool enableRenderer);
+		void initialize();
 
 		template<typename TApp>
 		void run();
