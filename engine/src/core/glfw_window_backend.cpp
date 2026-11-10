@@ -1,9 +1,12 @@
 #include "glfw_window_backend.h"
 
+#include "window_config.h"
+
 #include <GLFW/glfw3.h>
 
 #include <cstdint>
 #include <stdexcept>
+#include <string>
 
 namespace arvek
 {
@@ -12,14 +15,14 @@ namespace arvek
         if (config.width <= 0 || config.height <= 0)
         {
             throw std::invalid_argument(
-                "Window dimensions must be positive"
+                "Window dimensions must be positive!"
             );
         }
 
         if (config.title.empty())
         {
             throw std::invalid_argument(
-                "Window title must not be empty"
+                "Window title must not be empty!"
             );
         }
 
@@ -44,7 +47,7 @@ namespace arvek
         if (!window_)
         {
             throw std::runtime_error(
-                "Failed to create GLFW window"
+                "Failed to create GLFW window!"
             );
         }
 
@@ -96,7 +99,6 @@ namespace arvek
         if (window_)
         {
             glfwDestroyWindow(window_);
-            window_ = nullptr;
         }
     }
 
@@ -113,6 +115,42 @@ namespace arvek
     void GlfwWindowBackend::waitEvents()
     {
         glfwWaitEvents();
+    }
+
+    VkSurfaceKHR GlfwWindowBackend::createSurface(VkInstance instance) const
+    {
+        if (!window_)
+        {
+            throw std::logic_error(
+                "Cannot create Vulkan surface: GLFW window is null!"
+            );
+        }
+
+        if (instance == VK_NULL_HANDLE)
+        {
+            throw std::invalid_argument(
+                "Cannot create Vulkan surface: instance is null!"
+            );
+        }
+
+        VkSurfaceKHR surface = VK_NULL_HANDLE;
+
+        const VkResult result = glfwCreateWindowSurface(
+            instance,
+            window_,
+            nullptr,
+            &surface
+        );
+
+        if (result != VK_SUCCESS)
+        {
+            throw std::runtime_error(
+                "Failed to create Vulkan window surface. VkResult: " +
+                std::to_string(static_cast<int>(result))
+            );
+        }
+
+        return surface;
     }
 
     WindowExtent GlfwWindowBackend::framebufferExtent() const

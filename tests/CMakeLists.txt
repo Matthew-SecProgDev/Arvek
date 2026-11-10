@@ -1,3 +1,4 @@
+# ArvekLoggerTest
 add_executable(ArvekLoggerTest
     logger_test.cpp
 )
@@ -11,6 +12,7 @@ add_test(
     COMMAND ArvekLoggerTest
 )
 
+# ArvekAssertTest
 add_executable(ArvekAssertTest
     assert_test.cpp
 )
@@ -32,6 +34,7 @@ add_test(
         -P "${CMAKE_CURRENT_SOURCE_DIR}/check_assert_failure.cmake"
 )
 
+# ArvekServiceRegistryTest
 add_executable(ArvekServiceRegistryTest
     service_registry_test.cpp
 )
@@ -50,6 +53,7 @@ add_test(
     COMMAND ArvekServiceRegistryTest
 )
 
+# ArvekServiceHolderTest
 add_executable(ArvekServiceHolderTest
     service_holder_test.cpp
 )
@@ -67,6 +71,7 @@ add_test(
     COMMAND ArvekServiceHolderTest
 )
 
+# ArvekEngineLifecycleTest
 add_executable(ArvekEngineLifecycleTest
     engine_lifecycle_test.cpp
 )
@@ -80,6 +85,7 @@ add_test(
     COMMAND ArvekEngineLifecycleTest
 )
 
+# ArvekGlfwRuntimeTest
 add_executable(ArvekGlfwRuntimeTest
     glfw_runtime_test.cpp
 )
@@ -98,15 +104,472 @@ add_test(
     COMMAND ArvekGlfwRuntimeTest
 )
 
+# ArvekGlfwWindowManualTest
 add_executable(ArvekGlfwWindowManualTest
     glfw_window_manual_test.cpp
 )
 
 target_link_libraries(ArvekGlfwWindowManualTest
-    PRIVATE ArvekEngine
+    PRIVATE
+        ArvekEngine
+        Vulkan::Vulkan
 )
 
 target_include_directories(ArvekGlfwWindowManualTest
     PRIVATE
         ${PROJECT_SOURCE_DIR}/engine/src/core
+)
+
+# ArvekVulkanInstanceTest
+add_executable(ArvekVulkanInstanceTest
+    vulkan_instance_test.cpp
+)
+
+target_link_libraries(ArvekVulkanInstanceTest
+    PRIVATE
+        ArvekWindowTestSupport
+        Vulkan::Vulkan
+)
+
+target_include_directories(ArvekVulkanInstanceTest
+    PRIVATE
+        ${PROJECT_SOURCE_DIR}/engine/src/rendering
+)
+
+add_test(
+    NAME ArvekVulkanInstanceTest
+    COMMAND ArvekVulkanInstanceTest
+)
+
+# ArvekVulkanSurfaceTest
+add_executable(ArvekVulkanSurfaceTest
+    vulkan_surface_test.cpp
+)
+
+target_link_libraries(ArvekVulkanSurfaceTest
+    PRIVATE
+        ArvekWindowTestSupport
+        Vulkan::Vulkan
+)
+
+target_include_directories(ArvekVulkanSurfaceTest
+    PRIVATE
+        ${PROJECT_SOURCE_DIR}/engine/src/rendering
+)
+
+add_test(
+    NAME ArvekVulkanSurfaceTest
+    COMMAND ArvekVulkanSurfaceTest
+)
+
+# ArvekVulkanPhysicalDeviceTest
+add_executable(ArvekVulkanPhysicalDeviceTest
+    vulkan_physical_device_test.cpp
+)
+
+target_link_libraries(ArvekVulkanPhysicalDeviceTest
+    PRIVATE
+        ArvekWindowTestSupport
+        Vulkan::Vulkan
+)
+
+target_include_directories(ArvekVulkanPhysicalDeviceTest
+    PRIVATE
+        ${PROJECT_SOURCE_DIR}/engine/src/rendering
+)
+
+add_test(
+    NAME ArvekVulkanPhysicalDeviceTest
+    COMMAND ArvekVulkanPhysicalDeviceTest
+)
+
+# ArvekVulkanDeviceTest
+add_executable(ArvekVulkanDeviceTest
+    vulkan_device_test.cpp
+)
+
+target_link_libraries(ArvekVulkanDeviceTest
+    PRIVATE
+        ArvekWindowTestSupport
+        Vulkan::Vulkan
+)
+
+target_include_directories(ArvekVulkanDeviceTest
+    PRIVATE
+        ${PROJECT_SOURCE_DIR}/engine/src/rendering
+)
+
+add_test(
+    NAME ArvekVulkanDeviceTest
+    COMMAND ArvekVulkanDeviceTest
+)
+
+# ArvekVulkanValidationTest
+add_executable(ArvekVulkanValidationTest
+    vulkan_validation_test.cpp
+)
+
+target_link_libraries(ArvekVulkanValidationTest
+    PRIVATE
+        ArvekWindowTestSupport
+        Vulkan::Vulkan
+)
+
+target_include_directories(ArvekVulkanValidationTest
+    PRIVATE
+        ${PROJECT_SOURCE_DIR}/engine/src/rendering
+)
+
+add_test(
+    NAME ArvekVulkanValidationTest
+    COMMAND ArvekVulkanValidationTest
+)
+
+# ArvekVulkanSwapchainTest
+add_executable(ArvekVulkanSwapchainTest
+    vulkan_swapchain_test.cpp
+)
+
+target_link_libraries(ArvekVulkanSwapchainTest
+    PRIVATE
+        ArvekWindowTestSupport
+        Vulkan::Vulkan
+)
+
+target_include_directories(ArvekVulkanSwapchainTest
+    PRIVATE
+        ${PROJECT_SOURCE_DIR}/engine/src/rendering
+)
+
+add_test(
+    NAME ArvekVulkanSwapchainTest
+    COMMAND ArvekVulkanSwapchainTest
+)
+
+# ArvekVulkanCommandPoolTest
+add_executable(ArvekVulkanCommandPoolTest
+    vulkan_command_pool_test.cpp
+)
+
+target_link_libraries(ArvekVulkanCommandPoolTest
+    PRIVATE
+        ArvekWindowTestSupport
+        Vulkan::Vulkan
+)
+
+target_include_directories(ArvekVulkanCommandPoolTest
+    PRIVATE
+        ${PROJECT_SOURCE_DIR}/engine/src/rendering
+)
+
+add_test(
+    NAME ArvekVulkanCommandPoolTest
+    COMMAND ArvekVulkanCommandPoolTest
+)
+
+# ArvekVulkanQueueSubmissionTest
+add_executable(ArvekVulkanQueueSubmissionTest
+    vulkan_queue_submission_test.cpp
+)
+
+target_link_libraries(ArvekVulkanQueueSubmissionTest
+    PRIVATE
+        ArvekWindowTestSupport
+        Vulkan::Vulkan
+)
+
+target_include_directories(ArvekVulkanQueueSubmissionTest
+    PRIVATE
+        ${PROJECT_SOURCE_DIR}/engine/src/rendering
+)
+
+add_test(
+    NAME ArvekVulkanQueueSubmissionTest
+    COMMAND ArvekVulkanQueueSubmissionTest
+)
+
+# ArvekVulkanClearPresentManualTest
+add_executable(ArvekVulkanClearPresentManualTest
+    vulkan_clear_present_manual_test.cpp
+)
+
+target_link_libraries(ArvekVulkanClearPresentManualTest
+    PRIVATE
+        ArvekWindowTestSupport
+        Vulkan::Vulkan
+)
+
+target_include_directories(ArvekVulkanClearPresentManualTest
+    PRIVATE
+        ${PROJECT_SOURCE_DIR}/engine/src/rendering
+)
+
+# ArvekVulkanFrameLoopManualTest
+add_executable(ArvekVulkanFrameLoopManualTest
+    vulkan_frame_loop_manual_test.cpp
+)
+
+target_link_libraries(ArvekVulkanFrameLoopManualTest
+    PRIVATE
+        ArvekWindowTestSupport
+        Vulkan::Vulkan
+)
+
+target_include_directories(ArvekVulkanFrameLoopManualTest
+    PRIVATE
+        ${PROJECT_SOURCE_DIR}/engine/src/rendering
+)
+
+# Triangle shaders
+find_program(GLSLC_EXECUTABLE
+    NAMES glslc
+    HINTS
+        "$ENV{VULKAN_SDK}/Bin"
+        "$ENV{VULKAN_SDK}/bin"
+    REQUIRED
+)
+
+set(TRIANGLE_SHADER_SOURCE_DIR
+    "${PROJECT_SOURCE_DIR}/engine/shaders"
+)
+
+set(TRIANGLE_SHADER_BINARY_DIR
+    "${PROJECT_SOURCE_DIR}/engine/shaders"
+)
+
+set(TRIANGLE_VERTEX_SPV
+    "${TRIANGLE_SHADER_BINARY_DIR}/triangle.vert.spv"
+)
+
+set(TRIANGLE_FRAGMENT_SPV
+    "${TRIANGLE_SHADER_BINARY_DIR}/triangle.frag.spv"
+)
+
+foreach(stage IN ITEMS vert frag)
+    add_custom_command(
+        OUTPUT
+            "${TRIANGLE_SHADER_BINARY_DIR}/triangle.${stage}.spv"
+
+        COMMAND
+            "${CMAKE_COMMAND}" -E make_directory
+            "${TRIANGLE_SHADER_BINARY_DIR}"
+
+        COMMAND
+            "${GLSLC_EXECUTABLE}"
+            --target-env=vulkan1.0
+            "${TRIANGLE_SHADER_SOURCE_DIR}/triangle.${stage}"
+            -o
+            "${TRIANGLE_SHADER_BINARY_DIR}/triangle.${stage}.spv"
+
+        DEPENDS
+            "${TRIANGLE_SHADER_SOURCE_DIR}/triangle.${stage}"
+
+        COMMENT
+            "Compiling triangle.${stage} to SPIR-V"
+
+        VERBATIM
+    )
+endforeach()
+
+add_custom_target(ArvekTriangleShaders
+    DEPENDS
+        "${TRIANGLE_VERTEX_SPV}"
+        "${TRIANGLE_FRAGMENT_SPV}"
+)
+
+# ArvekVulkanShaderModuleTest
+add_executable(ArvekVulkanShaderModuleTest
+    vulkan_shader_module_test.cpp
+)
+
+target_link_libraries(ArvekVulkanShaderModuleTest
+    PRIVATE
+        ArvekWindowTestSupport
+        Vulkan::Vulkan
+)
+
+target_include_directories(ArvekVulkanShaderModuleTest
+    PRIVATE
+        ${PROJECT_SOURCE_DIR}/engine/src/rendering
+)
+
+add_dependencies(
+    ArvekVulkanShaderModuleTest
+    ArvekTriangleShaders
+)
+
+add_test(
+    NAME ArvekVulkanShaderModuleTest
+
+    COMMAND
+        ArvekVulkanShaderModuleTest
+        "${TRIANGLE_VERTEX_SPV}"
+        "${TRIANGLE_FRAGMENT_SPV}"
+)
+
+# ArvekVulkanRenderPassTest
+add_executable(ArvekVulkanRenderPassTest
+    vulkan_render_pass_test.cpp
+)
+
+target_link_libraries(ArvekVulkanRenderPassTest
+    PRIVATE
+        ArvekWindowTestSupport
+        Vulkan::Vulkan
+)
+
+target_include_directories(ArvekVulkanRenderPassTest
+    PRIVATE
+        ${PROJECT_SOURCE_DIR}/engine/src/rendering
+)
+
+add_test(
+    NAME ArvekVulkanRenderPassTest
+    COMMAND ArvekVulkanRenderPassTest
+)
+
+# ArvekVulkanGraphicsPipelineTest
+add_executable(ArvekVulkanGraphicsPipelineTest
+    vulkan_graphics_pipeline_test.cpp
+)
+
+target_link_libraries(ArvekVulkanGraphicsPipelineTest
+    PRIVATE
+        ArvekWindowTestSupport
+        Vulkan::Vulkan
+)
+
+target_include_directories(ArvekVulkanGraphicsPipelineTest
+    PRIVATE
+        ${PROJECT_SOURCE_DIR}/engine/src/rendering
+)
+
+add_dependencies(
+    ArvekVulkanGraphicsPipelineTest
+    ArvekTriangleShaders
+)
+
+add_test(
+    NAME ArvekVulkanGraphicsPipelineTest
+    COMMAND
+        ArvekVulkanGraphicsPipelineTest
+        "${TRIANGLE_VERTEX_SPV}"
+        "${TRIANGLE_FRAGMENT_SPV}"
+)
+
+# ArvekVulkanTriangleManualTest
+add_executable(ArvekVulkanTriangleManualTest
+    vulkan_triangle_manual_test.cpp
+)
+
+target_link_libraries(ArvekVulkanTriangleManualTest
+    PRIVATE
+        ArvekWindowTestSupport
+        Vulkan::Vulkan
+)
+
+target_include_directories(ArvekVulkanTriangleManualTest
+    PRIVATE
+        ${PROJECT_SOURCE_DIR}/engine/src/rendering
+)
+
+add_dependencies(
+    ArvekVulkanTriangleManualTest
+    ArvekTriangleShaders
+)
+
+target_compile_definitions(ArvekVulkanTriangleManualTest
+    PRIVATE
+        ARVEK_TRIANGLE_VERTEX_SPV="${TRIANGLE_VERTEX_SPV}"
+        ARVEK_TRIANGLE_FRAGMENT_SPV="${TRIANGLE_FRAGMENT_SPV}"
+)
+
+# ArvekVulkanRendererTest
+add_executable(ArvekVulkanRendererTest
+    vulkan_renderer_test.cpp
+)
+
+target_link_libraries(ArvekVulkanRendererTest
+    PRIVATE
+        ArvekWindowTestSupport
+)
+
+target_include_directories(ArvekVulkanRendererTest
+    PRIVATE
+        ${PROJECT_SOURCE_DIR}/engine/src/rendering
+)
+
+add_dependencies(
+    ArvekVulkanRendererTest
+    ArvekTriangleShaders
+)
+
+add_test(
+    NAME ArvekVulkanRendererTest
+    COMMAND
+        ArvekVulkanRendererTest
+        "${TRIANGLE_VERTEX_SPV}"
+        "${TRIANGLE_FRAGMENT_SPV}"
+)
+
+# ArvekVulkanRendererManualTest
+add_executable(ArvekVulkanRendererManualTest
+    vulkan_renderer_manual_test.cpp
+)
+
+target_link_libraries(ArvekVulkanRendererManualTest
+    PRIVATE
+        ArvekWindowTestSupport
+)
+
+target_include_directories(ArvekVulkanRendererManualTest
+    PRIVATE
+        ${PROJECT_SOURCE_DIR}/engine/src/rendering
+)
+
+add_dependencies(
+    ArvekVulkanRendererManualTest
+    ArvekTriangleShaders
+)
+
+target_compile_definitions(
+    ArvekVulkanRendererManualTest
+    PRIVATE
+        ARVEK_TRIANGLE_VERTEX_SPV="${TRIANGLE_VERTEX_SPV}"
+        ARVEK_TRIANGLE_FRAGMENT_SPV="${TRIANGLE_FRAGMENT_SPV}"
+)
+
+# ArvekWindowTestSupport
+add_library(ArvekWindowTestSupport STATIC
+    support/window_test_fixture.cpp
+)
+
+target_compile_features(ArvekWindowTestSupport
+    PRIVATE cxx_std_17
+)
+
+target_link_libraries(ArvekWindowTestSupport
+    PUBLIC ArvekEngine
+)
+
+target_include_directories(ArvekWindowTestSupport
+    PUBLIC
+        ${CMAKE_CURRENT_SOURCE_DIR}/support
+    PRIVATE
+        ${PROJECT_SOURCE_DIR}/engine/src/core
+)
+
+# Application lifecycle foundation
+add_executable(ArvekApplicationTest
+    application_test.cpp
+)
+
+target_link_libraries(ArvekApplicationTest
+    PRIVATE
+        ArvekEngine
+)
+
+add_test(
+    NAME ArvekApplicationTest
+    COMMAND ArvekApplicationTest
 )

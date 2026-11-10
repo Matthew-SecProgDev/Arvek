@@ -1,6 +1,7 @@
 #include "service_registry.h"
-#include "arvek/core/service_provider.h"
-#include "arvek/core/service_registrar.h"
+
+#include <arvek/core/service_provider.h>
+#include <arvek/core/service_registrar.h>
 
 namespace arvek
 {

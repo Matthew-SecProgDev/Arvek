@@ -1,5 +1,6 @@
 #include "glfw_runtime.h"
 #include "glfw_window_backend.h"
+#include "window_config.h"
 
 #include <exception>
 #include <iostream>
@@ -15,7 +16,7 @@ int main()
             arvek::WindowConfig config;
             config.width = 1024;
             config.height = 768;
-            config.title = "Arvek - GLFW Test";
+            config.title = "Arvek GLFW Test";
 
             arvek::GlfwWindowBackend window(config);
 

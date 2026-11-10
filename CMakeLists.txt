@@ -40,6 +40,9 @@ if(NOT TARGET glfw)
     FetchContent_MakeAvailable(glfw)
 endif()
 
+# Vulkan
+find_package(Vulkan REQUIRED)
+
 add_subdirectory(engine)
 add_subdirectory(sandbox)
 

@@ -1,12 +1,15 @@
-#include "arvek/core/engine.h"
+#include <arvek/core/engine.h>
 
 #include <arvek/core/logger.h>
 #include <arvek/core/window.h>
 #include "service_registry.h"
 #include "glfw_runtime.h"
-#include "glfw_window_backend.h"
 #include "window_config.h"
+#include "../rendering/vulkan_renderer.h"
+#include "window_factory.h"
 
+#include <cstdint>
+#include <memory>
 #include <stdexcept>
 
 namespace arvek
@@ -36,15 +39,14 @@ namespace arvek
         config.height = 768;
         config.title = "Arvek Engine";
 
-        auto backend = std::make_unique<GlfwWindowBackend>(config);
+        auto window = WindowFactory::create(config);
 
-        auto window = std::unique_ptr<Window>(
-            new Window(std::move(backend))
-        );
+        auto renderer = std::make_unique<VulkanRenderer>(*window);
 
         serviceRegistry_ = std::move(registry);
         glfwRuntime_ = std::move(runtime);
         window_ = std::move(window);
+        renderer_ = std::move(renderer);
 
         state_ = State::Initialized;
 
@@ -58,10 +60,13 @@ namespace arvek
             return;
         }
 
+        // Stop application and scene activity first
+        // when those systems are implemented.
+
+        renderer_.reset();
+
         window_.reset();
-
         glfwRuntime_.reset();
-
         serviceRegistry_.reset();
 
         state_ = State::Shutdown;

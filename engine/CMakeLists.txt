@@ -8,15 +8,34 @@ add_library(ArvekEngine STATIC
     src/core/glfw_runtime.cpp
     src/core/glfw_window_backend.cpp
     src/core/window.cpp
+    src/core/window_factory.cpp
+    src/rendering/instance.cpp
+    src/rendering/surface.cpp
+    src/rendering/physical_device.cpp
+    src/rendering/device.cpp
+    src/rendering/swapchain.cpp
+    src/rendering/command_pool.cpp
+    src/rendering/fence.cpp
+    src/rendering/semaphore.cpp
+    src/rendering/shader_module.cpp
+    src/rendering/render_pass.cpp
+    src/rendering/framebuffer.cpp
+    src/rendering/pipeline_layout.cpp
+    src/rendering/graphics_pipeline.cpp
+    src/rendering/vulkan_renderer.cpp
 )
 
 add_library(Arvek::Engine ALIAS ArvekEngine)
 
-target_compile_features(ArvekEngine PUBLIC cxx_std_17)
+target_compile_features(ArvekEngine
+    PUBLIC cxx_std_17
+)
 
 target_include_directories(ArvekEngine
     PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/rendering
 )
 
 target_link_libraries(ArvekEngine
@@ -24,6 +43,7 @@ target_link_libraries(ArvekEngine
         fmt::fmt
     PRIVATE
         glfw
+        Vulkan::Vulkan
 )
 
 if(MSVC)
