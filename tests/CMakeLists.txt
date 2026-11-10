@@ -558,3 +558,18 @@ target_include_directories(ArvekWindowTestSupport
     PRIVATE
         ${PROJECT_SOURCE_DIR}/engine/src/core
 )
+
+# Application lifecycle foundation
+add_executable(ArvekApplicationTest
+    application_test.cpp
+)
+
+target_link_libraries(ArvekApplicationTest
+    PRIVATE
+        ArvekEngine
+)
+
+add_test(
+    NAME ArvekApplicationTest
+    COMMAND ArvekApplicationTest
+)
