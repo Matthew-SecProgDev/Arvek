@@ -24,29 +24,33 @@ namespace arvek
 		Engine& operator=(Engine&&) = delete;
 
 		void initialize();
-		void shutdown();
 
 		template<typename TApp>
 		void run();
 
+        void requestExit() noexcept;
+
 		[[nodiscard]]
 		Window& window();
+
+        void shutdown();
 
 	private:
 		enum class State
 		{
 			Constructed,
 			Initialized,
+            Running,
 			Shutdown
 		};
 
 		std::unique_ptr<ServiceRegistry> serviceRegistry_;
 		std::unique_ptr<GlfwRuntime> glfwRuntime_;
 		std::unique_ptr<Window> window_;
+        std::unique_ptr<VulkanRenderer> renderer_;
 
 		State state_{ State::Constructed };
-
-		std::unique_ptr<VulkanRenderer> renderer_;
+        bool exitRequested_{ false };
 
 		void runApplication(Application& app);
 	};
@@ -55,23 +59,18 @@ namespace arvek
 template <typename TApp>
 void arvek::Engine::run()
 {
-	static_assert(
-		std::is_base_of_v<Application, TApp>,
-		"TApp must inherit from arvek::Application!"
-		);
+    static_assert(
+        std::is_base_of_v<Application, TApp>,
+        "TApp must derive from arvek::Application!"
+        );
 
-	static_assert(
-		std::is_default_constructible_v<TApp>,
-		"TApp must be default-constructible!"
-		);
+    if (state_ != State::Initialized)
+    {
+        throw std::logic_error(
+            "Engine must be initialized and idle before running!"
+        );
+    }
 
-	if (state_ != State::Initialized)
-	{
-		throw std::logic_error(
-			"Engine must be initialized before running!"
-		);
-	}
-
-	TApp app;
-	runApplication(app);
+    TApp app;
+    runApplication(app);
 }

@@ -35,7 +35,6 @@ namespace arvek
         }
 
         auto registry = std::make_unique<ServiceRegistry>();
-
         auto runtime = std::make_unique<GlfwRuntime>();
 
         WindowConfig config;
@@ -44,7 +43,6 @@ namespace arvek
         config.title = "Arvek Engine";
 
         auto window = WindowFactory::create(config);
-
         auto renderer = std::make_unique<VulkanRenderer>(*window);
 
         serviceRegistry_ = std::move(registry);
@@ -57,11 +55,29 @@ namespace arvek
         ARV_LOG_INFO("Arvek Engine initialized successfully.");
     }
 
+    void Engine::requestExit() noexcept
+    {
+        if (state_ == State::Running)
+        {
+            exitRequested_ = true;
+        }
+    }
+
     void Engine::shutdown()
     {
         if (state_ == State::Shutdown)
         {
             return;
+        }
+
+        // Destroying engine resources while the frame loop
+        // is executing would invalidate active references.
+        if (state_ == State::Running)
+        {
+            throw std::logic_error(
+                "Cannot shut down Engine while it is running! "
+                "Use requestExit() instead."
+            );
         }
 
         // Stop application and scene activity first
@@ -73,6 +89,7 @@ namespace arvek
         glfwRuntime_.reset();
         serviceRegistry_.reset();
 
+        exitRequested_ = false;
         state_ = State::Shutdown;
 
         ARV_LOG_INFO("Arvek Engine shutdown complete.");
@@ -80,11 +97,11 @@ namespace arvek
 
     Window& Engine::window()
     {
-        if (state_ != State::Initialized || !window_)
+        if ((state_ != State::Initialized &&
+            state_ != State::Running) ||
+            !window_)
         {
-            throw std::logic_error(
-                "Engine window is not available!"
-            );
+            throw std::logic_error("Engine window is not available!");
         }
 
         return *window_;
@@ -92,10 +109,20 @@ namespace arvek
 
     void Engine::runApplication(Application& app)
     {
-        if (state_ != State::Initialized || !serviceRegistry_)
+        if (state_ != State::Initialized ||
+            !serviceRegistry_ ||
+            !window_ ||
+            !renderer_)
         {
-            throw std::logic_error("Engine is not initialized!");
+            throw std::logic_error(
+                "Engine is not ready to run an application!"
+            );
         }
+
+        // Enter the running state before onStart(), so a
+        // startup callback can request an immediate exit.
+        state_ = State::Running;
+        exitRequested_ = false;
 
         auto provider = serviceRegistry_->provider();
         auto registrar = serviceRegistry_->gameRegistrar();
@@ -105,10 +132,68 @@ namespace arvek
             registrar
         );
 
-        app.onStart(context);
+        try
+        {
+            app.onStart(context);
+        }
+        catch (...)
+        {
+            // Startup never completed, so onShutdown()
+            // is not called. RAII handles partial startup.
+            serviceRegistry_->clearGameServices();
 
-        // The rendering loop will be integrated next.
+            exitRequested_ = false;
+            state_ = State::Initialized;
 
-        app.onShutdown();
+            throw;
+        }
+
+        // Preserve the first failure, even if shutdown
+        // subsequently throws another exception.
+        std::exception_ptr failure;
+
+        try
+        {
+            while (!exitRequested_ && !window_->shouldClose())
+            {
+                window_->pollEvents();
+
+                // A false return means rendering cannot continue,
+                // usually because the window is closing during swapchain recreation.
+                if (!renderer_->drawFrame())
+                {
+                    requestExit();
+                }
+            }
+        }
+        catch (...)
+        {
+            failure = std::current_exception();
+        }
+
+        // This runs even if the frame loop threw.
+        try
+        {
+            app.onShutdown();
+        }
+        catch (...)
+        {
+            if (!failure)
+            {
+                failure = std::current_exception();
+            }
+        }
+
+        // Game-owned services must outlive onShutdown().
+        // Engine-owned services remain registered.
+        serviceRegistry_->clearGameServices();
+
+        exitRequested_ = false;
+        state_ = State::Initialized;
+
+        if (failure)
+        {
+            std::rethrow_exception(failure);
+        }
     }
 }

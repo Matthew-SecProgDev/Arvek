@@ -36,6 +36,7 @@ namespace arvek
         template<typename T>
         T& addEngineService(std::unique_ptr<T> service);
 
+        void clearGameServices() noexcept;
         void clear() noexcept;
 
         [[nodiscard]]

@@ -7,21 +7,22 @@
 #include <string>
 #include <exception>
 
-class SandboxApplication final : public arvek::Application
+namespace
 {
-public:
-    void onStart(arvek::ApplicationStartupContext& context) override
+    class SandboxGame final : public arvek::Application
     {
-        (void)context;
+    public:
+        void onStart(arvek::ApplicationStartupContext& context) override
+        {
+            ARV_LOG_INFO("Sandbox application started.");
+        }
 
-        ARV_LOG_INFO("Sandbox application started.");
-    }
-
-    void onShutdown() override
-    {
-        ARV_LOG_INFO("Sandbox application stopped.");
-    }
-};
+        void onShutdown() override
+        {
+            ARV_LOG_INFO("Sandbox application shutting down.");
+        }
+    };
+}
 
 int main()
 {
@@ -30,14 +31,19 @@ int main()
         arvek::Engine engine;
 
         engine.initialize();
-        engine.run<SandboxApplication>();
+        engine.run<SandboxGame>();
         engine.shutdown();
+
+        ARV_LOG_INFO("Sandbox execution completed.");
 
         return EXIT_SUCCESS;
     }
-    catch (const std::exception& e)
+    catch (const std::exception& exception)
     {
-        ARV_LOG_ERROR(std::string("Sandbox failed: ") + e.what());
+        ARV_LOG_ERROR(
+            "Sandbox failure: " +
+            std::string(exception.what())
+        );
 
         return EXIT_FAILURE;
     }
