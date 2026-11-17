@@ -1,7 +1,6 @@
-#include <arvek/core/engine.h>
-#include <arvek/core/logger.h>
+#include <arvek/core/application_runtime.h>
 #include <arvek/core/application_startup_context.h>
-#include <arvek/core/application.h>
+#include <arvek/core/logger.h>
 
 #include <cstdlib>
 #include <string>
@@ -26,25 +25,5 @@ namespace
 
 int main()
 {
-    try
-    {
-        arvek::Engine engine;
-
-        engine.initialize();
-        engine.run<SandboxGame>();
-        engine.shutdown();
-
-        ARV_LOG_INFO("Sandbox execution completed.");
-
-        return EXIT_SUCCESS;
-    }
-    catch (const std::exception& exception)
-    {
-        ARV_LOG_ERROR(
-            "Sandbox failure: " +
-            std::string(exception.what())
-        );
-
-        return EXIT_FAILURE;
-    }
+    return arvek::runApplication<SandboxGame>();
 }
