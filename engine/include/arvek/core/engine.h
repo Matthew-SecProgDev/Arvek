@@ -1,6 +1,6 @@
 #pragma once
 
-#include <iostream>
+#include <type_traits>
 #include <memory>
 #include <stdexcept>
 
@@ -10,6 +10,7 @@ namespace arvek
 	class GlfwRuntime;
 	class Window;
 	class VulkanRenderer;
+	class Application;
 
 	class Engine final
 	{
@@ -27,38 +28,49 @@ namespace arvek
 		template<typename TApp>
 		void run();
 
+        void requestExit() noexcept;
+
 		[[nodiscard]]
 		Window& window();
 
-		void shutdown();
+        void shutdown();
 
 	private:
 		enum class State
 		{
 			Constructed,
 			Initialized,
+            Running,
 			Shutdown
 		};
 
 		std::unique_ptr<ServiceRegistry> serviceRegistry_;
 		std::unique_ptr<GlfwRuntime> glfwRuntime_;
 		std::unique_ptr<Window> window_;
+        std::unique_ptr<VulkanRenderer> renderer_;
 
 		State state_{ State::Constructed };
+        bool exitRequested_{ false };
 
-		std::unique_ptr<VulkanRenderer> renderer_;
+		void runApplication(Application& app);
 	};
 }
 
 template <typename TApp>
 void arvek::Engine::run()
 {
-	if (state_ != State::Initialized)
-	{
-		throw std::logic_error(
-			"Engine must be initialized before running!"
-		);
-	}
+    static_assert(
+        std::is_base_of_v<Application, TApp>,
+        "TApp must derive from arvek::Application!"
+        );
 
-	std::cout << "Arvek Engine run!\n";
+    if (state_ != State::Initialized)
+    {
+        throw std::logic_error(
+            "Engine must be initialized and idle before running!"
+        );
+    }
+
+    TApp app;
+    runApplication(app);
 }

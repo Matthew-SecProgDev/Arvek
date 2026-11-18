@@ -1,38 +1,29 @@
-#include <arvek/core/engine.h>
+#include <arvek/core/application_runtime.h>
+#include <arvek/core/application_startup_context.h>
 #include <arvek/core/logger.h>
-#include <arvek/core/window.h>
 
 #include <cstdlib>
 #include <string>
 #include <exception>
 
-int main()
+namespace
 {
-    try
+    class SandboxGame final : public arvek::Application
     {
-        arvek::Engine engine;
-
-        engine.initialize();
-
-        auto& window = engine.window();
-
-        ARV_LOG_INFO("Arvek window initialized.");
-
-        while (!window.shouldClose())
+    public:
+        void onStart(arvek::ApplicationStartupContext& context) override
         {
-            window.waitEvents();
+            ARV_LOG_INFO("Sandbox application started.");
         }
 
-        engine.shutdown();
+        void onShutdown() override
+        {
+            ARV_LOG_INFO("Sandbox application shutting down.");
+        }
+    };
+}
 
-        ARV_LOG_INFO("Arvek shutdown complete.");
-    }
-    catch (const std::exception& e)
-    {
-        ARV_LOG_ERROR("Error: " + std::string(e.what()));
-
-        return EXIT_FAILURE;
-    }
-
-    return EXIT_SUCCESS;
+int main()
+{
+    return arvek::runApplication<SandboxGame>();
 }

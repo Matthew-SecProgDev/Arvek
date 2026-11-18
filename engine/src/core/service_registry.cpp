@@ -38,6 +38,29 @@ namespace arvek
         }
     }
 
+    void ServiceRegistry::clearGameServices() noexcept
+    {
+        for (const auto& service : gameServices_)
+        {
+            for (auto it = services_.begin(); it != services_.end();)
+            {
+                if (it->second == service->get())
+                {
+                    it = services_.erase(it);
+                }
+                else
+                {
+                    ++it;
+                }
+            }
+        }
+
+        while (!gameServices_.empty())
+        {
+            gameServices_.pop_back();
+        }
+    }
+
     std::size_t ServiceRegistry::size() const noexcept
     {
         return services_.size();

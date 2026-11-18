@@ -1,4 +1,4 @@
-﻿# Arvek
+# Arvek
 
 **Arvek** is an early-stage, open-source game engine written in **C++17**, with a **Vulkan** rendering backend. It is being built incrementally, with an emphasis on clear subsystem boundaries, explicit resource ownership, testability, and performance-conscious design.
 
@@ -8,13 +8,14 @@ The long-term goal is a general-purpose engine for creating games, particularly 
 
 ### Core
 
-- Engine initialization and shutdown with explicit lifecycle checks.
+- Engine initialization and shutdown with explicit lifecycle checks and execution-state handling.
 - Logging and debug assertions.
 - Service registration and lookup, with distinct provider and registrar responsibilities.
 - GLFW-based window management and event handling.
-- An initial `Application` abstraction with `onStart()` and `onShutdown()` callbacks.
-- `ApplicationStartupContext` for access to the existing service infrastructure during startup.
-- `Engine::run<TApp>()` integration for application startup and shutdown (**not yet a continuous game loop**).
+- An `Application` abstraction with a required `onStart()` callback and an optional `onShutdown()` callback.
+- `ApplicationStartupContext` for controlled access to service registration and lookup during startup.
+- An engine-controlled event/rendering loop, with graceful exit requests and application lifecycle cleanup.
+- `arvek::runApplication<TApp>()` as a high-level entry point that creates and runs the engine, handles top-level exceptions, and returns a process exit code.
 
 ### Rendering
 
@@ -84,51 +85,46 @@ ctest --test-dir build -C Release --output-on-failure
 
 **Note:** Some graphics tests are manual and are not necessarily executed by ordinary CTest runs. Check the targets defined in `tests/CMakeLists.txt` and run the relevant manual executables separately. A successful automated test run does not establish that all rendering scenarios have been visually verified.
 
-## Application API (current milestone)
+## Application API
 
-The application lifecycle is intentionally minimal at this point:
+For ordinary game applications, use the high-level runtime entry point. Game code does not need to construct or shut down `Engine` directly:
 
 ```cpp
 #include <arvek/core/application.h>
+#include <arvek/core/application_runtime.h>
 #include <arvek/core/application_startup_context.h>
-#include <arvek/core/engine.h>
 
 class MyGame final : public arvek::Application
 {
 public:
     void onStart(arvek::ApplicationStartupContext& context) override
     {
-        // Register or access game services here.
+        // Register game services and configure startup here.
         (void)context;
     }
 
-    void onShutdown() override
-    {
-        // Clean up application-specific resources here.
-    }
+    // onShutdown() is optional; use RAII for resource ownership.
 };
 
 int main()
 {
-    arvek::Engine engine;
-    engine.initialize();
-    engine.run<MyGame>();
-    engine.shutdown();
+    return arvek::runApplication<MyGame>();
 }
 ```
 
-**Important:** In the current development stage, `run<MyGame>()` invokes application startup and shutdown but does **not** yet keep a window running in an engine-controlled frame loop. That work is planned next. The snippet demonstrates lifecycle usage rather than a complete playable application; production applications should also handle exceptions appropriately.
+`runApplication<TApp>()` manages engine creation, initialization, application execution, shutdown, and top-level exception reporting. The engine runs a continuous event/rendering loop until the window closes or an exit is requested. The default engine renderer clears/presents frames; the example is **not yet a complete game**.
 
 ## Architecture direction
 
 Arvek is being designed around distinct responsibilities:
 
-- **Engine:** owns the core runtime, controls initialization and shutdown, and will coordinate application execution and frames.
-- **Application:** configures the game at startup and participates in the application lifecycle.
+- **Runtime entry point:** manages engine construction, execution, cleanup, and top-level error reporting.
+- **Engine:** owns the core runtime and renderer, controls subsystem initialization/shutdown, and coordinates the event/rendering loop.
+- **Application:** configures the game during startup; shutdown customization is optional.
 - **Service infrastructure:** separates service registration from service retrieval and controls the lifetime of registered services.
 - **Window layer:** abstracts platform/window operations from higher-level engine code.
 - **VulkanRenderer:** owns low-level Vulkan rendering resources and GPU frame execution.
-- **Future scene and system layers:** will manage world state, ECS entities/components, and game systems without exposing Vulkan implementation details to game code.
+- **Future time, input, scene, and system layers:** will measure time, process input, own game worlds and ECS entities/components, and coordinate gameplay behavior without exposing Vulkan implementation details to game code.
 
 ## Roadmap
 
@@ -139,11 +135,14 @@ This is a development direction, **not a release schedule**.
 - [x] Vulkan triangle rendering and renderer ownership in `Engine`.
 - [x] Isolated Vulkan tests using independent window fixtures.
 - [x] Basic `Application` / `ApplicationStartupContext` integration.
-- [ ] Engine-controlled application/rendering loop and exit handling.
-- [ ] Improve application execution-state handling and lifecycle tests.
-- [ ] Harden Vulkan synchronization, presentation, resize, and resource lifetime.
-- [ ] Introduce game timing and input abstractions.
+- [x] Engine-controlled application/rendering loop and exit handling.
+- [x] Application execution-state handling and expanded lifecycle tests.
+- [x] High-level `runApplication<TApp>()` runtime entry point.
+- [x] Refine `Application` lifecycle (`onStart()` required; `onShutdown()` optional).
+- [ ] Add game timing (frame delta and elapsed time), followed by fixed-step simulation support.
+- [ ] Add input-state tracking and event processing.
 - [ ] Develop ECS, scenes, scene contexts, and system scheduling.
+- [ ] Harden Vulkan synchronization, presentation, resize, and resource lifetime.
 - [ ] Add a game-facing renderer API and mesh/material/texture submission.
 - [ ] Expand toward gameplay tooling and a broader game engine feature set.
 
