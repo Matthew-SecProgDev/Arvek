@@ -573,3 +573,43 @@ add_test(
     NAME ArvekApplicationTest
     COMMAND ArvekApplicationTest
 )
+
+# ArvekTimerTest
+add_executable(ArvekTimerTest
+    timer_test.cpp
+)
+
+target_link_libraries(ArvekTimerTest
+    PRIVATE
+        ArvekEngine
+)
+
+target_include_directories(ArvekTimerTest
+    PRIVATE
+        ${PROJECT_SOURCE_DIR}/engine/src/core
+)
+
+add_test(
+    NAME ArvekTimerTest
+    COMMAND ArvekTimerTest
+)
+
+# ArvekGameTimeTest
+add_executable(ArvekGameTimeTest
+    game_time_test.cpp
+)
+
+target_link_libraries(ArvekGameTimeTest
+    PRIVATE
+        ArvekEngine
+)
+
+target_include_directories(ArvekGameTimeTest
+    PRIVATE
+        ${PROJECT_SOURCE_DIR}/engine/src/core
+)
+
+add_test(
+    NAME ArvekGameTimeTest
+    COMMAND ArvekGameTimeTest
+)
