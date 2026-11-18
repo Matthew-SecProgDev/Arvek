@@ -180,6 +180,19 @@ namespace
     };
 
     bool ShutdownDuringRunGame::shutdownRejected{ false };
+
+    class ApplicationWithoutShutdown final : public arvek::Application
+    {
+    public:
+        void onStart(arvek::ApplicationStartupContext& context) override
+        {
+            // The test harness requests exit so that
+            // the rendering loop does not block.
+            TestEnvironment::engine->requestExit();
+        }
+
+        // No onShutdown() override.
+    };
 }
 
 int main()
@@ -356,13 +369,17 @@ int main()
             "Shutdown during active execution was not rejected!"
         );
 
-        // 11. Normal engine shutdown.
+        // 11. Running app without having to do override its 'onShutdown()' method.
+        TestEnvironment::reset(engine);
+        engine.run<ApplicationWithoutShutdown>();
+
+        // 12. Normal engine shutdown.
         engine.shutdown();
 
         // Repeated shutdown must be safe.
         engine.shutdown();
 
-        // 12. Window access after shutdown fails.
+        // 13. Window access after shutdown fails.
         bool windowAccessRejected{ false };
 
         try
@@ -379,7 +396,7 @@ int main()
             "Window access after shutdown was not rejected!"
         );
 
-        // 13. Running after shutdown fails.
+        // 14. Running after shutdown fails.
         bool runAfterShutdownRejected{ false };
 
         try
@@ -396,7 +413,7 @@ int main()
             "Run after shutdown was not rejected!"
         );
 
-        // 14. Reinitialization after shutdown fails.
+        // 15. Reinitialization after shutdown fails.
         bool reinitializationRejected{ false };
 
         try
