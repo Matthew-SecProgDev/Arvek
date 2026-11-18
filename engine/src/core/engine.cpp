@@ -11,10 +11,12 @@
 #include <arvek/core/application_startup_context.h>
 #include <arvek/core/service_registrar.h>
 #include <arvek/core/service_provider.h>
+#include "game_time.h"
 
 #include <cstdint>
 #include <memory>
 #include <stdexcept>
+#include <chrono>
 
 namespace arvek
 {
@@ -154,12 +156,38 @@ namespace arvek
 
         try
         {
+            using Clock = std::chrono::steady_clock;
+
+            // Create the timing state for this execution session.
+            GameTime gameTime;
+            gameTime.reset();
+
+            // Start measuring immediately before the main loop.
+            auto previousFrameTime = Clock::now();
+
             while (!exitRequested_ && !window_->shouldClose())
             {
                 window_->pollEvents();
 
-                // A false return means rendering cannot continue,
-                // usually because the window is closing during swapchain recreation.
+                // Measure elapsed real time.
+                const auto currentFrameTime = Clock::now();
+
+                const double realDeltaSeconds = std::chrono::duration<double>(
+                    currentFrameTime - previousFrameTime
+                ).count();
+
+                previousFrameTime = currentFrameTime;
+
+                // Update the engine's authoritative
+                // timing state for this execution session.
+                gameTime.advance(realDeltaSeconds);
+
+                // Future:
+                // Update active scenes and systems.
+                // Execute fixed-step simulation.
+                // Prepare rendering submissions.
+
+                // Preserve existing renderer behavior.
                 if (!renderer_->drawFrame())
                 {
                     requestExit();
