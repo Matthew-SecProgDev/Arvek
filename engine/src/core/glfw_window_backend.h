@@ -39,7 +39,7 @@ namespace arvek
         void acknowledgeResize() override;
 
         [[nodiscard]]
-        const KeyboardState& keyboardState() const noexcept;
+        const KeyboardState& keyboardState() const noexcept override;
 
     private:
         GLFWwindow* window_{ nullptr };

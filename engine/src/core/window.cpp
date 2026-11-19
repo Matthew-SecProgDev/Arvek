@@ -49,4 +49,9 @@ namespace arvek
     {
         backend_->acknowledgeResize();
     }
+
+    const KeyboardState& Window::keyboardState() const noexcept
+    {
+        return backend_->keyboardState();
+    }
 }

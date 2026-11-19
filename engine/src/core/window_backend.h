@@ -4,6 +4,8 @@
 
 namespace arvek
 {
+    class KeyboardState;
+
     class WindowBackend
     {
     public:
@@ -23,5 +25,8 @@ namespace arvek
         virtual bool wasResized() const = 0;
 
         virtual void acknowledgeResize() = 0;
+
+        [[nodiscard]]
+        virtual const KeyboardState& keyboardState() const noexcept = 0;
     };
 }

@@ -10,6 +10,7 @@ namespace arvek
     class WindowBackend;
     class Surface;
     class WindowFactory;
+    class KeyboardState;
 
     class Window final
     {
@@ -43,5 +44,8 @@ namespace arvek
         explicit Window(std::unique_ptr<WindowBackend> backend);
 
         std::unique_ptr<WindowBackend> backend_;
+
+        [[nodiscard]]
+        const KeyboardState& keyboardState() const noexcept;
     };
 }
