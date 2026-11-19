@@ -613,3 +613,23 @@ add_test(
     NAME ArvekGameTimeTest
     COMMAND ArvekGameTimeTest
 )
+
+# ArvekKeyboardStateTest
+add_executable(ArvekKeyboardStateTest
+    keyboard_state_test.cpp
+)
+
+target_link_libraries(ArvekKeyboardStateTest
+    PRIVATE
+        ArvekEngine
+)
+
+target_include_directories(ArvekKeyboardStateTest
+    PRIVATE
+        ${PROJECT_SOURCE_DIR}/engine/src/core
+)
+
+add_test(
+    NAME ArvekKeyboardStateTest
+    COMMAND ArvekKeyboardStateTest
+)

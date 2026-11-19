@@ -25,6 +25,7 @@ add_library(ArvekEngine STATIC
     src/rendering/vulkan_renderer.cpp
     src/core/timer.cpp
     src/core/game_time.cpp
+    src/core/keyboard_state.cpp
 )
 
 add_library(Arvek::Engine ALIAS ArvekEngine)
