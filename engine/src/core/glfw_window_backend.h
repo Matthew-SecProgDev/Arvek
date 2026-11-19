@@ -2,6 +2,7 @@
 
 #include "window_backend.h"
 #include "../rendering/surface_provider.h"
+#include "keyboard_state.h"
 
 struct GLFWwindow;
 
@@ -37,9 +38,14 @@ namespace arvek
 
         void acknowledgeResize() override;
 
+        [[nodiscard]]
+        const KeyboardState& keyboardState() const noexcept;
+
     private:
         GLFWwindow* window_{ nullptr };
         bool resized_{ false };
+
+        KeyboardState keyboardState_;
 
         static void framebufferSizeCallback(
             GLFWwindow* window,
@@ -53,6 +59,11 @@ namespace arvek
             int scancode,
             int action,
             int mods
+        );
+
+        static void windowFocusCallback(
+            GLFWwindow* window,
+            int focused
         );
     };
 }

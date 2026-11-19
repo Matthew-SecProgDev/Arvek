@@ -7,6 +7,7 @@
 #include <cstdint>
 #include <stdexcept>
 #include <string>
+#include <cstddef>
 
 namespace arvek
 {
@@ -63,6 +64,11 @@ namespace arvek
             keyCallback
         );
 
+        glfwSetWindowFocusCallback(
+            window_,
+            windowFocusCallback
+        );
+
         if (config.centered)
         {
             if (GLFWmonitor* monitor = glfwGetPrimaryMonitor())
@@ -109,6 +115,7 @@ namespace arvek
 
     void GlfwWindowBackend::pollEvents()
     {
+        keyboardState_.beginFrame();
         glfwPollEvents();
     }
 
@@ -180,6 +187,11 @@ namespace arvek
         resized_ = false;
     }
 
+    const KeyboardState& GlfwWindowBackend::keyboardState() const noexcept
+    {
+        return keyboardState_;
+    }
+
     void GlfwWindowBackend::framebufferSizeCallback(
         GLFWwindow* window,
         int,
@@ -200,10 +212,59 @@ namespace arvek
         int action,
         int)
     {
+        auto* backend = static_cast<GlfwWindowBackend*>(glfwGetWindowUserPointer(window));
+        if (!backend)
+        {
+            return;
+        }
+
+        // GLFW_KEY_UNKNOWN is -1.
+        // Reject invalid keys before converting to size_t.
+        if (key < 0 ||
+            static_cast<std::size_t>(key) >= KeyboardState::KeyCount)
+        {
+            return;
+        }
+
+        const auto keyIndex = static_cast<std::size_t>(key);
+
+        switch (action)
+        {
+        case GLFW_PRESS:
+            backend->keyboardState_.handleKeyPress(keyIndex);
+            break;
+        case GLFW_RELEASE:
+            backend->keyboardState_.handleKeyRelease(keyIndex);
+            break;
+        case GLFW_REPEAT:
+            // A repeat is not a new key-down transition.
+            break;
+        default:
+            break;
+        }
+
+        // Temporary sandbox behavior:
+        // retain Escape-to-close until the game-facing input API supports application exit.
         if (key == GLFW_KEY_ESCAPE &&
             action == GLFW_PRESS)
         {
             glfwSetWindowShouldClose(window, GLFW_TRUE);
+        }
+    }
+
+    void GlfwWindowBackend::windowFocusCallback(
+        GLFWwindow* window,
+        int focused)
+    {
+        auto* backend = static_cast<GlfwWindowBackend*>(glfwGetWindowUserPointer(window));
+        if (!backend)
+        {
+            return;
+        }
+
+        if (focused == GLFW_FALSE)
+        {
+            backend->keyboardState_.clear();
         }
     }
 }
