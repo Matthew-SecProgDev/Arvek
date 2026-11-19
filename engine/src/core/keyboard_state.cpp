@@ -4,8 +4,11 @@ namespace arvek
 {
     void KeyboardState::beginFrame() noexcept
     {
-        pressed_.fill(false);
-        released_.fill(false);
+        pressed_ = pendingPressed_;
+        released_ = pendingReleased_;
+
+        pendingPressed_.fill(false);
+        pendingReleased_.fill(false);
     }
 
     void KeyboardState::handleKeyPress(std::size_t key) noexcept
@@ -17,7 +20,7 @@ namespace arvek
 
         if (!down_[key])
         {
-            pressed_[key] = true;
+            pendingPressed_[key] = true;
         }
 
         down_[key] = true;
@@ -32,7 +35,7 @@ namespace arvek
 
         if (down_[key])
         {
-            released_[key] = true;
+            pendingReleased_[key] = true;
         }
 
         down_[key] = false;
@@ -56,7 +59,11 @@ namespace arvek
     void KeyboardState::clear() noexcept
     {
         down_.fill(false);
+
         pressed_.fill(false);
         released_.fill(false);
+
+        pendingPressed_.fill(false);
+        pendingReleased_.fill(false);
     }
 }

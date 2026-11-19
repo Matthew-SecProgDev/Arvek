@@ -30,8 +30,15 @@ namespace arvek
         void clear() noexcept;
 
     private:
+        // Current physical key state.
         std::array<bool, KeyCount> down_{};
+
+        // Transitions visible to the current frame.
         std::array<bool, KeyCount> pressed_{};
         std::array<bool, KeyCount> released_{};
+
+        // Transitions awaiting publication.
+        std::array<bool, KeyCount> pendingPressed_{};
+        std::array<bool, KeyCount> pendingReleased_{};
     };
 }

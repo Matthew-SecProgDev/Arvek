@@ -115,8 +115,10 @@ namespace arvek
 
     void GlfwWindowBackend::pollEvents()
     {
-        keyboardState_.beginFrame();
         glfwPollEvents();
+
+        // Publish events received during polling, together with any events already pending.
+        keyboardState_.beginFrame();
     }
 
     void GlfwWindowBackend::waitEvents()
