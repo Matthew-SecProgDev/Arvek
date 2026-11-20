@@ -64,6 +64,21 @@ namespace arvek
             keyCallback
         );
 
+        glfwSetMouseButtonCallback(
+            window_,
+            mouseButtonCallback
+        );
+
+        glfwSetCursorPosCallback(
+            window_,
+            cursorPositionCallback
+        );
+
+        glfwSetScrollCallback(
+            window_,
+            scrollCallback
+        );
+
         glfwSetWindowFocusCallback(
             window_,
             windowFocusCallback
@@ -119,6 +134,7 @@ namespace arvek
 
         // Publish events received during polling, together with any events already pending.
         keyboardState_.beginFrame();
+        mouseState_.beginFrame();
     }
 
     void GlfwWindowBackend::waitEvents()
@@ -194,6 +210,11 @@ namespace arvek
         return keyboardState_;
     }
 
+    const MouseState& GlfwWindowBackend::mouseState() const noexcept
+    {
+        return mouseState_;
+    }
+
     void GlfwWindowBackend::framebufferSizeCallback(
         GLFWwindow* window,
         int,
@@ -254,6 +275,73 @@ namespace arvek
         }
     }
 
+    void GlfwWindowBackend::mouseButtonCallback(
+        GLFWwindow* window,
+        int button,
+        int action,
+        int /*mods*/)
+    {
+        auto* backend = static_cast<GlfwWindowBackend*>(glfwGetWindowUserPointer(window));
+
+        if (!backend)
+        {
+            return;
+        }
+
+        if (button < 0 ||
+            static_cast<std::size_t>(button) >= MouseState::ButtonCount)
+        {
+            return;
+        }
+
+        const auto buttonIndex = static_cast<std::size_t>(button);
+
+        switch (action)
+        {
+        case GLFW_PRESS:
+            backend->mouseState_.handlePress(buttonIndex);
+            break;
+        case GLFW_RELEASE:
+            backend->mouseState_.handleRelease(buttonIndex);
+            break;
+        default:
+            break;
+        }
+    }
+
+    void GlfwWindowBackend::cursorPositionCallback(
+        GLFWwindow* window,
+        double x,
+        double y)
+    {
+        auto* backend = static_cast<GlfwWindowBackend*>(glfwGetWindowUserPointer(window));
+
+        if (!backend)
+        {
+            return;
+        }
+
+        backend->mouseState_.handleCursorMove(x, y);
+    }
+
+    void GlfwWindowBackend::scrollCallback(
+        GLFWwindow* window,
+        double xOffset,
+        double yOffset)
+    {
+        auto* backend = static_cast<GlfwWindowBackend*>(glfwGetWindowUserPointer(window));
+
+        if (!backend)
+        {
+            return;
+        }
+
+        backend->mouseState_.handleScroll(
+            xOffset,
+            yOffset
+        );
+    }
+
     void GlfwWindowBackend::windowFocusCallback(
         GLFWwindow* window,
         int focused)
@@ -267,6 +355,7 @@ namespace arvek
         if (focused == GLFW_FALSE)
         {
             backend->keyboardState_.clear();
+            backend->mouseState_.clear();
         }
     }
 }

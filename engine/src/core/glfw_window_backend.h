@@ -3,6 +3,7 @@
 #include "window_backend.h"
 #include "../rendering/surface_provider.h"
 #include "keyboard_state.h"
+#include "mouse_state.h"
 
 struct GLFWwindow;
 
@@ -41,11 +42,15 @@ namespace arvek
         [[nodiscard]]
         const KeyboardState& keyboardState() const noexcept override;
 
+        [[nodiscard]]
+        const MouseState& mouseState() const noexcept;
+
     private:
         GLFWwindow* window_{ nullptr };
         bool resized_{ false };
 
         KeyboardState keyboardState_;
+        MouseState mouseState_;
 
         static void framebufferSizeCallback(
             GLFWwindow* window,
@@ -59,6 +64,25 @@ namespace arvek
             int scancode,
             int action,
             int mods
+        );
+
+        static void mouseButtonCallback(
+            GLFWwindow* window,
+            int button,
+            int action,
+            int mods
+        );
+
+        static void cursorPositionCallback(
+            GLFWwindow* window,
+            double x,
+            double y
+        );
+
+        static void scrollCallback(
+            GLFWwindow* window,
+            double xOffset,
+            double yOffset
         );
 
         static void windowFocusCallback(
