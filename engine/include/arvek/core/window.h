@@ -11,6 +11,7 @@ namespace arvek
     class Surface;
     class WindowFactory;
     class KeyboardState;
+    class MouseState;
 
     class Window final
     {
@@ -47,5 +48,8 @@ namespace arvek
 
         [[nodiscard]]
         const KeyboardState& keyboardState() const noexcept;
+
+        [[nodiscard]]
+        const MouseState& mouseState() const noexcept;
     };
 }

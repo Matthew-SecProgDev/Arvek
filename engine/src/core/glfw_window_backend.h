@@ -43,7 +43,7 @@ namespace arvek
         const KeyboardState& keyboardState() const noexcept override;
 
         [[nodiscard]]
-        const MouseState& mouseState() const noexcept;
+        const MouseState& mouseState() const noexcept override;
 
     private:
         GLFWwindow* window_{ nullptr };

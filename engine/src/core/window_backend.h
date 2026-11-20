@@ -5,6 +5,7 @@
 namespace arvek
 {
     class KeyboardState;
+    class MouseState;
 
     class WindowBackend
     {
@@ -28,5 +29,8 @@ namespace arvek
 
         [[nodiscard]]
         virtual const KeyboardState& keyboardState() const noexcept = 0;
+
+        [[nodiscard]]
+        virtual const MouseState& mouseState() const noexcept = 0;
     };
 }

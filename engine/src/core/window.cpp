@@ -54,4 +54,9 @@ namespace arvek
     {
         return backend_->keyboardState();
     }
+
+    const MouseState& Window::mouseState() const noexcept
+    {
+        return backend_->mouseState();
+    }
 }
