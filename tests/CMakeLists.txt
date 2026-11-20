@@ -633,3 +633,23 @@ add_test(
     NAME ArvekKeyboardStateTest
     COMMAND ArvekKeyboardStateTest
 )
+
+# ArvekMouseStateTest
+add_executable(ArvekMouseStateTest
+    mouse_state_test.cpp
+)
+
+target_link_libraries(ArvekMouseStateTest
+    PRIVATE
+        ArvekEngine
+)
+
+target_include_directories(ArvekMouseStateTest
+    PRIVATE
+        ${PROJECT_SOURCE_DIR}/engine/src/core
+)
+
+add_test(
+    NAME ArvekMouseStateTest
+    COMMAND ArvekMouseStateTest
+)

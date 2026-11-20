@@ -26,6 +26,7 @@ add_library(ArvekEngine STATIC
     src/core/timer.cpp
     src/core/game_time.cpp
     src/core/keyboard_state.cpp
+    src/core/mouse_state.cpp
 )
 
 add_library(Arvek::Engine ALIAS ArvekEngine)

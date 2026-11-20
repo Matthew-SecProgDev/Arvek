@@ -233,10 +233,10 @@ namespace arvek
         switch (action)
         {
         case GLFW_PRESS:
-            backend->keyboardState_.handleKeyPress(keyIndex);
+            backend->keyboardState_.handlePress(keyIndex);
             break;
         case GLFW_RELEASE:
-            backend->keyboardState_.handleKeyRelease(keyIndex);
+            backend->keyboardState_.handleRelease(keyIndex);
             break;
         case GLFW_REPEAT:
             // A repeat is not a new key-down transition.

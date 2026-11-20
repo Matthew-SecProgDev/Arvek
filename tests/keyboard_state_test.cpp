@@ -34,17 +34,17 @@ int main()
         );
 
         check(
-            !keyboard.pressedThisFrame(key),
+            !keyboard.wasPressed(key),
             "Key must not initially be pressed."
         );
 
         check(
-            !keyboard.releasedThisFrame(key),
+            !keyboard.wasReleased(key),
             "Key must not initially be released."
         );
 
         // Test 2: Press events remain pending until beginFrame() publishes them.
-        keyboard.handleKeyPress(key);
+        keyboard.handlePress(key);
 
         check(
             keyboard.isDown(key),
@@ -52,12 +52,12 @@ int main()
         );
 
         check(
-            !keyboard.pressedThisFrame(key),
+            !keyboard.wasPressed(key),
             "Unpublished press became visible."
         );
 
         check(
-            !keyboard.releasedThisFrame(key),
+            !keyboard.wasReleased(key),
             "Unexpected release transition."
         );
 
@@ -70,12 +70,12 @@ int main()
         );
 
         check(
-            keyboard.pressedThisFrame(key),
+            keyboard.wasPressed(key),
             "Pending press was not published."
         );
 
         check(
-            !keyboard.releasedThisFrame(key),
+            !keyboard.wasReleased(key),
             "Unexpected release after publication."
         );
 
@@ -88,17 +88,17 @@ int main()
         );
 
         check(
-            !keyboard.pressedThisFrame(key),
+            !keyboard.wasPressed(key),
             "Press transition was not cleared."
         );
 
         check(
-            !keyboard.releasedThisFrame(key),
+            !keyboard.wasReleased(key),
             "Unexpected release transition."
         );
 
         // Test 4: Repeated presses while held must not generate another press transition.
-        keyboard.handleKeyPress(key);
+        keyboard.handlePress(key);
         keyboard.beginFrame();
 
         check(
@@ -107,12 +107,12 @@ int main()
         );
 
         check(
-            !keyboard.pressedThisFrame(key),
+            !keyboard.wasPressed(key),
             "Repeated press generated a new transition."
         );
 
         // Test 5: Release events are published on the next input frame.
-        keyboard.handleKeyRelease(key);
+        keyboard.handleRelease(key);
 
         check(
             !keyboard.isDown(key),
@@ -120,7 +120,7 @@ int main()
         );
 
         check(
-            !keyboard.releasedThisFrame(key),
+            !keyboard.wasReleased(key),
             "Unpublished release became visible."
         );
 
@@ -132,12 +132,12 @@ int main()
         );
 
         check(
-            keyboard.releasedThisFrame(key),
+            keyboard.wasReleased(key),
             "Release transition was not published."
         );
 
         check(
-            !keyboard.pressedThisFrame(key),
+            !keyboard.wasPressed(key),
             "Unexpected press transition."
         );
 
@@ -145,7 +145,7 @@ int main()
         keyboard.beginFrame();
 
         check(
-            !keyboard.releasedThisFrame(key),
+            !keyboard.wasReleased(key),
             "Release transition survived another frame."
         );
 
@@ -156,11 +156,11 @@ int main()
 
         // Test 7: Releasing an already released key
         // must not generate another release transition.
-        keyboard.handleKeyRelease(key);
+        keyboard.handleRelease(key);
         keyboard.beginFrame();
 
         check(
-            !keyboard.releasedThisFrame(key),
+            !keyboard.wasReleased(key),
             "Repeated release generated a transition."
         );
 
@@ -168,8 +168,8 @@ int main()
         // same frame must preserve both transitions.
         keyboard.clear();
 
-        keyboard.handleKeyPress(key);
-        keyboard.handleKeyRelease(key);
+        keyboard.handlePress(key);
+        keyboard.handleRelease(key);
 
         check(
             !keyboard.isDown(key),
@@ -177,24 +177,24 @@ int main()
         );
 
         check(
-            !keyboard.pressedThisFrame(key),
+            !keyboard.wasPressed(key),
             "Short press was published prematurely."
         );
 
         check(
-            !keyboard.releasedThisFrame(key),
+            !keyboard.wasReleased(key),
             "Short release was published prematurely."
         );
 
         keyboard.beginFrame();
 
         check(
-            keyboard.pressedThisFrame(key),
+            keyboard.wasPressed(key),
             "Short press transition was lost."
         );
 
         check(
-            keyboard.releasedThisFrame(key),
+            keyboard.wasReleased(key),
             "Short release transition was lost."
         );
 
@@ -206,8 +206,8 @@ int main()
         // Test 9: Multiple keys must maintain independent states.
         keyboard.clear();
 
-        keyboard.handleKeyPress(key);
-        keyboard.handleKeyPress(anotherKey);
+        keyboard.handlePress(key);
+        keyboard.handlePress(anotherKey);
 
         keyboard.beginFrame();
 
@@ -222,16 +222,16 @@ int main()
         );
 
         check(
-            keyboard.pressedThisFrame(key),
+            keyboard.wasPressed(key),
             "First key press was lost."
         );
 
         check(
-            keyboard.pressedThisFrame(anotherKey),
+            keyboard.wasPressed(anotherKey),
             "Second key press was lost."
         );
 
-        keyboard.handleKeyRelease(key);
+        keyboard.handleRelease(key);
         keyboard.beginFrame();
 
         check(
@@ -239,7 +239,7 @@ int main()
             "First key should be released."
         );
 
-        check(keyboard.releasedThisFrame(key),
+        check(keyboard.wasReleased(key),
             "First key release was lost.");
 
         check(
@@ -248,31 +248,31 @@ int main()
         );
 
         check(
-            !keyboard.releasedThisFrame(anotherKey),
+            !keyboard.wasReleased(anotherKey),
             "Second key was unexpectedly released."
         );
 
         // Test 10: Pending events must survive until beginFrame() is called.
         keyboard.clear();
 
-        keyboard.handleKeyPress(key);
+        keyboard.handlePress(key);
 
         check(
-            !keyboard.pressedThisFrame(key),
+            !keyboard.wasPressed(key),
             "Pending press was published too early."
         );
 
         keyboard.beginFrame();
 
         check(
-            keyboard.pressedThisFrame(key),
+            keyboard.wasPressed(key),
             "Pending press was lost."
         );
 
         // Test 11: clear() removes both pending and published transitions.
         keyboard.clear();
 
-        keyboard.handleKeyPress(key);
+        keyboard.handlePress(key);
 
         // Clear pending events before publication.
         keyboard.clear();
@@ -284,21 +284,21 @@ int main()
         );
 
         check(
-            !keyboard.pressedThisFrame(key),
+            !keyboard.wasPressed(key),
             "Clear did not discard pending press."
         );
 
         check(
-            !keyboard.releasedThisFrame(key),
+            !keyboard.wasReleased(key),
             "Clear did not discard pending release."
         );
 
         // Also test clearing published transitions.
-        keyboard.handleKeyPress(key);
+        keyboard.handlePress(key);
         keyboard.beginFrame();
 
         check(
-            keyboard.pressedThisFrame(key),
+            keyboard.wasPressed(key),
             "Expected a published press."
         );
 
@@ -310,20 +310,20 @@ int main()
         );
 
         check(
-            !keyboard.pressedThisFrame(key),
+            !keyboard.wasPressed(key),
             "Clear did not reset published press."
         );
 
         check(
-            !keyboard.releasedThisFrame(key),
+            !keyboard.wasReleased(key),
             "Clear did not reset published release."
         );
 
         // Test 12: Out-of-range key indices must be ignored safely.
         constexpr std::size_t invalidKey = KeyboardState::KeyCount;
 
-        keyboard.handleKeyPress(invalidKey);
-        keyboard.handleKeyRelease(invalidKey);
+        keyboard.handlePress(invalidKey);
+        keyboard.handleRelease(invalidKey);
 
         keyboard.beginFrame();
 
@@ -333,19 +333,19 @@ int main()
         );
 
         check(
-            !keyboard.pressedThisFrame(invalidKey),
+            !keyboard.wasPressed(invalidKey),
             "Invalid key generated a press."
         );
 
         check(
-            !keyboard.releasedThisFrame(invalidKey),
+            !keyboard.wasReleased(invalidKey),
             "Invalid key generated a release."
         );
 
         // Test 13: Last valid key index must be supported.
         constexpr std::size_t lastValidKey = KeyboardState::KeyCount - 1;
 
-        keyboard.handleKeyPress(lastValidKey);
+        keyboard.handlePress(lastValidKey);
         keyboard.beginFrame();
 
         check(
@@ -354,11 +354,11 @@ int main()
         );
 
         check(
-            keyboard.pressedThisFrame(lastValidKey),
+            keyboard.wasPressed(lastValidKey),
             "Last valid key press was lost."
         );
 
-        keyboard.handleKeyRelease(lastValidKey);
+        keyboard.handleRelease(lastValidKey);
         keyboard.beginFrame();
 
         check(
@@ -367,7 +367,7 @@ int main()
         );
 
         check(
-            keyboard.releasedThisFrame(lastValidKey),
+            keyboard.wasReleased(lastValidKey),
             "Last valid key release was lost."
         );
 
@@ -380,12 +380,12 @@ int main()
         );
 
         check(
-            !anotherKeyboard.pressedThisFrame(key),
+            !anotherKeyboard.wasPressed(key),
             "New keyboard inherited a press."
         );
 
         check(
-            !anotherKeyboard.releasedThisFrame(key),
+            !anotherKeyboard.wasReleased(key),
             "New keyboard inherited a release."
         );
 

@@ -11,7 +11,7 @@ namespace arvek
         pendingReleased_.fill(false);
     }
 
-    void KeyboardState::handleKeyPress(std::size_t key) noexcept
+    void KeyboardState::handlePress(std::size_t key) noexcept
     {
         if (key >= KeyCount)
         {
@@ -26,7 +26,7 @@ namespace arvek
         down_[key] = true;
     }
 
-    void KeyboardState::handleKeyRelease(std::size_t key) noexcept
+    void KeyboardState::handleRelease(std::size_t key) noexcept
     {
         if (key >= KeyCount)
         {
@@ -46,12 +46,12 @@ namespace arvek
         return key < KeyCount && down_[key];
     }
 
-    bool KeyboardState::pressedThisFrame(std::size_t key) const noexcept
+    bool KeyboardState::wasPressed(std::size_t key) const noexcept
     {
         return key < KeyCount && pressed_[key];
     }
 
-    bool KeyboardState::releasedThisFrame(std::size_t key) const noexcept
+    bool KeyboardState::wasReleased(std::size_t key) const noexcept
     {
         return key < KeyCount && released_[key];
     }

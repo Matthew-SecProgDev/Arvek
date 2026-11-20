@@ -13,18 +13,18 @@ namespace arvek
         void beginFrame() noexcept;
 
         // Process incoming keyboard events
-        void handleKeyPress(std::size_t key) noexcept;
-        void handleKeyRelease(std::size_t key) noexcept;
+        void handlePress(std::size_t key) noexcept;
+        void handleRelease(std::size_t key) noexcept;
 
         // Query keyboard state
         [[nodiscard]]
         bool isDown(std::size_t key) const noexcept;
 
         [[nodiscard]]
-        bool pressedThisFrame(std::size_t key) const noexcept;
+        bool wasPressed(std::size_t key) const noexcept;
 
         [[nodiscard]]
-        bool releasedThisFrame(std::size_t key) const noexcept;
+        bool wasReleased(std::size_t key) const noexcept;
 
         // Clear held keys and transition flags
         void clear() noexcept;
