@@ -668,3 +668,24 @@ add_test(
     NAME ArvekInputCodesTest
     COMMAND ArvekInputCodesTest
 )
+
+# ArvekGlfwInputCodesTest
+add_executable(ArvekGlfwInputCodesTest
+    glfw_input_codes_test.cpp
+)
+
+target_link_libraries(ArvekGlfwInputCodesTest
+    PRIVATE
+        ArvekEngine
+        glfw
+)
+
+target_include_directories(ArvekGlfwInputCodesTest
+    PRIVATE
+        ${PROJECT_SOURCE_DIR}/engine/src/core
+)
+
+add_test(
+    NAME ArvekGlfwInputCodesTest
+    COMMAND ArvekGlfwInputCodesTest
+)

@@ -6,9 +6,7 @@ namespace arvek
 {
     enum class Key : std::uint16_t
     {
-        Unknown = 0,
-
-        W,
+        W = 0,
         S,
         A,        
         D,
