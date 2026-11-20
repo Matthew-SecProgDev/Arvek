@@ -653,3 +653,18 @@ add_test(
     NAME ArvekMouseStateTest
     COMMAND ArvekMouseStateTest
 )
+
+# ArvekInputCodesTest
+add_executable(ArvekInputCodesTest
+    input_codes_test.cpp
+)
+
+target_link_libraries(ArvekInputCodesTest
+    PRIVATE
+        ArvekEngine
+)
+
+add_test(
+    NAME ArvekInputCodesTest
+    COMMAND ArvekInputCodesTest
+)
