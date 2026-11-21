@@ -24,8 +24,8 @@ int main()
     {
         KeyboardState keyboard;
 
-        constexpr std::size_t key = 65;
-        constexpr std::size_t anotherKey = 87;
+        constexpr Key key = Key::A;
+        constexpr Key anotherKey = Key::W;
 
         // Test 1: Initial state.
         check(
@@ -319,59 +319,45 @@ int main()
             "Clear did not reset published release."
         );
 
-        // Test 12: Out-of-range key indices must be ignored safely.
-        constexpr std::size_t invalidKey = KeyboardState::KeyCount;
+        // Test 12: Count is a sentinel, not a real key.
+        keyboard.handlePress(Key::Count);
+        keyboard.beginFrame();
+
+        check(
+            !keyboard.isDown(Key::Count),
+            "Count was accepted as a key."
+        );
+
+        check(
+            !keyboard.wasPressed(Key::Count),
+            "Count generated a press."
+        );
+
+        // Test 13: Out-of-range enum values must be safe.
+        const auto invalidKey = static_cast<Key>(static_cast<std::size_t>(Key::Count) + 1);
 
         keyboard.handlePress(invalidKey);
         keyboard.handleRelease(invalidKey);
-
         keyboard.beginFrame();
 
         check(
             !keyboard.isDown(invalidKey),
-            "Invalid key was reported as down."
+            "Out-of-range key was accepted."
         );
 
-        check(
-            !keyboard.wasPressed(invalidKey),
-            "Invalid key generated a press."
-        );
+        // Test 14: Last valid key must be supported.
+        constexpr Key lastKey = Key::RightControl;
 
-        check(
-            !keyboard.wasReleased(invalidKey),
-            "Invalid key generated a release."
-        );
-
-        // Test 13: Last valid key index must be supported.
-        constexpr std::size_t lastValidKey = KeyboardState::KeyCount - 1;
-
-        keyboard.handlePress(lastValidKey);
+        keyboard.clear();
+        keyboard.handlePress(lastKey);
         keyboard.beginFrame();
 
         check(
-            keyboard.isDown(lastValidKey),
-            "Last valid key was not held."
+            keyboard.wasPressed(lastKey),
+            "Last supported key press was lost."
         );
 
-        check(
-            keyboard.wasPressed(lastValidKey),
-            "Last valid key press was lost."
-        );
-
-        keyboard.handleRelease(lastValidKey);
-        keyboard.beginFrame();
-
-        check(
-            !keyboard.isDown(lastValidKey),
-            "Last valid key remained down."
-        );
-
-        check(
-            keyboard.wasReleased(lastValidKey),
-            "Last valid key release was lost."
-        );
-
-        // Test 14: A new instance must have independent, empty keyboard state.
+        // Test 15: A new instance must have independent, empty keyboard state.
         KeyboardState anotherKeyboard;
 
         check(

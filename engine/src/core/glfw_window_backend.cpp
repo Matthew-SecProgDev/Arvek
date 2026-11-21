@@ -1,6 +1,7 @@
 #include "glfw_window_backend.h"
 
 #include "window_config.h"
+#include "glfw_input_codes.h"
 
 #include <GLFW/glfw3.h>
 
@@ -231,9 +232,9 @@ namespace arvek
     void GlfwWindowBackend::keyCallback(
         GLFWwindow* window,
         int key,
-        int,
+        int /*scancode*/,
         int action,
-        int)
+        int /*mods*/)
     {
         auto* backend = static_cast<GlfwWindowBackend*>(glfwGetWindowUserPointer(window));
         if (!backend)
@@ -241,34 +242,30 @@ namespace arvek
             return;
         }
 
-        // GLFW_KEY_UNKNOWN is -1.
-        // Reject invalid keys before converting to size_t.
-        if (key < 0 ||
-            static_cast<std::size_t>(key) >= KeyboardState::KeyCount)
+        const auto translatedKey = translateGlfwKey(key);
+
+        if (!translatedKey)
         {
             return;
         }
 
-        const auto keyIndex = static_cast<std::size_t>(key);
-
         switch (action)
         {
         case GLFW_PRESS:
-            backend->keyboardState_.handlePress(keyIndex);
+            backend->keyboardState_.handlePress(*translatedKey);
             break;
         case GLFW_RELEASE:
-            backend->keyboardState_.handleRelease(keyIndex);
+            backend->keyboardState_.handleRelease(*translatedKey);
             break;
         case GLFW_REPEAT:
-            // A repeat is not a new key-down transition.
+            // Repeating does not produce a new press transition.
             break;
         default:
             break;
         }
 
-        // Temporary sandbox behavior:
-        // retain Escape-to-close until the game-facing input API supports application exit.
-        if (key == GLFW_KEY_ESCAPE &&
+        // Keep our temporary Escape-to-close behavior.
+        if (*translatedKey == Key::Escape &&
             action == GLFW_PRESS)
         {
             glfwSetWindowShouldClose(window, GLFW_TRUE);

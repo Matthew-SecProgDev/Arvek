@@ -1,5 +1,7 @@
 #pragma once
 
+#include <arvek/input/key.h>
+
 #include <array>
 #include <cstddef>
 
@@ -8,23 +10,23 @@ namespace arvek
     class KeyboardState final
     {
     public:
-        static constexpr std::size_t KeyCount = 512;
+        static constexpr std::size_t KeyCount = static_cast<std::size_t>(Key::Count);
 
         void beginFrame() noexcept;
 
         // Process incoming keyboard events
-        void handlePress(std::size_t key) noexcept;
-        void handleRelease(std::size_t key) noexcept;
+        void handlePress(Key key) noexcept;
+        void handleRelease(Key key) noexcept;
 
         // Query keyboard state
         [[nodiscard]]
-        bool isDown(std::size_t key) const noexcept;
+        bool isDown(Key key) const noexcept;
 
         [[nodiscard]]
-        bool wasPressed(std::size_t key) const noexcept;
+        bool wasPressed(Key key) const noexcept;
 
         [[nodiscard]]
-        bool wasReleased(std::size_t key) const noexcept;
+        bool wasReleased(Key key) const noexcept;
 
         // Clear held keys and transition flags
         void clear() noexcept;

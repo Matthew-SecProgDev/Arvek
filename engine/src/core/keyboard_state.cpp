@@ -1,5 +1,18 @@
 #include "keyboard_state.h"
 
+namespace
+{
+    constexpr std::size_t toIndex(arvek::Key key) noexcept
+    {
+        return static_cast<std::size_t>(key);
+    }
+
+    constexpr bool isValid(arvek::Key key) noexcept
+    {
+        return toIndex(key) < arvek::KeyboardState::KeyCount;
+    }
+}
+
 namespace arvek
 {
     void KeyboardState::beginFrame() noexcept
@@ -11,49 +24,53 @@ namespace arvek
         pendingReleased_.fill(false);
     }
 
-    void KeyboardState::handlePress(std::size_t key) noexcept
+    void KeyboardState::handlePress(Key key) noexcept
     {
-        if (key >= KeyCount)
+        if (!isValid(key))
         {
             return;
         }
 
-        if (!down_[key])
+        const auto index = toIndex(key);
+
+        if (!down_[index])
         {
-            pendingPressed_[key] = true;
+            pendingPressed_[index] = true;
         }
 
-        down_[key] = true;
+        down_[index] = true;
     }
 
-    void KeyboardState::handleRelease(std::size_t key) noexcept
+    void KeyboardState::handleRelease(Key key) noexcept
     {
-        if (key >= KeyCount)
+        if (!isValid(key))
         {
             return;
         }
 
-        if (down_[key])
+        const auto index = toIndex(key);
+
+        if (down_[index])
         {
-            pendingReleased_[key] = true;
+            pendingReleased_[index] = true;
         }
 
-        down_[key] = false;
+        down_[index] = false;
     }
 
-    bool KeyboardState::isDown(std::size_t key) const noexcept
+    bool KeyboardState::isDown(Key key) const noexcept
     {
-        return key < KeyCount && down_[key];
+        return isValid(key) && down_[toIndex(key)];
     }
 
-    bool KeyboardState::wasPressed(std::size_t key) const noexcept
+    bool KeyboardState::wasPressed(Key key) const noexcept
     {
-        return key < KeyCount && pressed_[key];
+        return isValid(key) && pressed_[toIndex(key)];
     }
 
-    bool KeyboardState::wasReleased(std::size_t key) const noexcept
+    bool KeyboardState::wasReleased(Key key) const noexcept
     {
-        return key < KeyCount && released_[key];
+        return isValid(key) && released_[toIndex(key)];
     }
 
     void KeyboardState::clear() noexcept
