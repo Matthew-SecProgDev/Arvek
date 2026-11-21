@@ -12,6 +12,7 @@ namespace arvek
     class WindowFactory;
     class KeyboardState;
     class MouseState;
+    class Input;
 
     class Window final
     {
@@ -41,6 +42,7 @@ namespace arvek
         friend class Engine;
         friend class Surface;
         friend class WindowFactory;
+        friend class Input;
 
         explicit Window(std::unique_ptr<WindowBackend> backend);
 
