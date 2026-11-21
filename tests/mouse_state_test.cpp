@@ -29,8 +29,8 @@ int main()
     {
         MouseState mouse;
 
-        constexpr std::size_t leftButton = 0;
-        constexpr std::size_t rightButton = 1;
+        constexpr MouseButton leftButton = MouseButton::Left;
+        constexpr MouseButton rightButton = MouseButton::Right;
 
         // Test 1: Initial state.
         check(
@@ -248,7 +248,8 @@ int main()
         );
 
         // Test 13: Invalid mouse buttons.
-        constexpr auto invalidButton = MouseState::ButtonCount;
+        mouse.clear();
+        constexpr auto invalidButton = MouseButton::Count;
 
         mouse.handlePress(invalidButton);
         mouse.handleRelease(invalidButton);
@@ -264,7 +265,44 @@ int main()
             "Invalid button press reported."
         );
 
-        // Test 14: Clear pending events.
+        check(
+            !mouse.wasReleased(invalidButton),
+            "Invalid button release was reported."
+        );
+
+        // Test another out-of-range value.
+        const auto outOfRangeButton = static_cast<MouseButton>(
+            static_cast<std::size_t>(MouseButton::Count) + 1
+            );
+
+        mouse.handlePress(outOfRangeButton);
+        mouse.beginFrame();
+
+        check(
+            !mouse.isDown(outOfRangeButton),
+            "Out-of-range button was accepted."
+        );
+
+        // Test 14: Last valid button must be supported.
+        mouse.clear();
+
+        mouse.handlePress(MouseButton::Middle);
+        mouse.beginFrame();
+
+        check(
+            mouse.wasPressed(MouseButton::Middle),
+            "Middle mouse button press was lost."
+        );
+
+        mouse.handleRelease(MouseButton::Middle);
+        mouse.beginFrame();
+
+        check(
+            mouse.wasReleased(MouseButton::Middle),
+            "Middle mouse button release was lost."
+        );
+
+        // Test 15: Clear pending events.
         mouse.clear();
 
         mouse.handlePress(leftButton);

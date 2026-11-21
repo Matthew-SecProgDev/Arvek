@@ -1,5 +1,18 @@
 #include "mouse_state.h"
 
+namespace
+{
+    constexpr std::size_t toIndex(arvek::MouseButton button) noexcept
+    {
+        return static_cast<std::size_t>(button);
+    }
+
+    constexpr bool isValid(arvek::MouseButton button) noexcept
+    {
+        return toIndex(button) < arvek::MouseState::ButtonCount;
+    }
+}
+
 namespace arvek
 {
     void MouseState::beginFrame() noexcept
@@ -17,34 +30,38 @@ namespace arvek
         pendingScrollDelta_ = {};
     }
 
-    void MouseState::handlePress(std::size_t button) noexcept
+    void MouseState::handlePress(MouseButton button) noexcept
     {
-        if (button >= ButtonCount)
+        if (!isValid(button))
         {
             return;
         }
 
-        if (!down_[button])
+        const auto index = toIndex(button);
+
+        if (!down_[index])
         {
-            pendingPressed_[button] = true;
+            pendingPressed_[index] = true;
         }
 
-        down_[button] = true;
+        down_[index] = true;
     }
 
-    void MouseState::handleRelease(std::size_t button) noexcept
+    void MouseState::handleRelease(MouseButton button) noexcept
     {
-        if (button >= ButtonCount)
+        if (!isValid(button))
         {
             return;
         }
 
-        if (down_[button])
+        const auto index = toIndex(button);
+
+        if (down_[index])
         {
-            pendingReleased_[button] = true;
+            pendingReleased_[index] = true;
         }
 
-        down_[button] = false;
+        down_[index] = false;
     }
 
     void MouseState::handleCursorMove(double x, double y) noexcept
@@ -65,19 +82,19 @@ namespace arvek
         pendingScrollDelta_.y += yOffset;
     }
 
-    bool MouseState::isDown(std::size_t button) const noexcept
+    bool MouseState::isDown(MouseButton button) const noexcept
     {
-        return button < ButtonCount && down_[button];
+        return isValid(button) && down_[toIndex(button)];
     }
 
-    bool MouseState::wasPressed(std::size_t button) const noexcept
+    bool MouseState::wasPressed(MouseButton button) const noexcept
     {
-        return button < ButtonCount && pressed_[button];
+        return isValid(button) && pressed_[toIndex(button)];
     }
 
-    bool MouseState::wasReleased(std::size_t button) const noexcept
+    bool MouseState::wasReleased(MouseButton button) const noexcept
     {
-        return button < ButtonCount && released_[button];
+        return isValid(button) && released_[toIndex(button)];
     }
 
     MousePosition MouseState::cursorPosition() const noexcept

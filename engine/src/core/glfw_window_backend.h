@@ -53,40 +53,40 @@ namespace arvek
         MouseState mouseState_;
 
         static void framebufferSizeCallback(
-            GLFWwindow* window,
+            GLFWwindow* glfwWindow,
             int width,
             int height
         );
 
         static void keyCallback(
-            GLFWwindow* window,
-            int key,
+            GLFWwindow* glfwWindow,
+            int glfwKey,
             int scancode,
             int action,
             int mods
         );
 
         static void mouseButtonCallback(
-            GLFWwindow* window,
-            int button,
+            GLFWwindow* glfwWindow,
+            int glfwButton,
             int action,
             int mods
         );
 
         static void cursorPositionCallback(
-            GLFWwindow* window,
+            GLFWwindow* glfwWindow,
             double x,
             double y
         );
 
         static void scrollCallback(
-            GLFWwindow* window,
+            GLFWwindow* glfwWindow,
             double xOffset,
             double yOffset
         );
 
         static void windowFocusCallback(
-            GLFWwindow* window,
+            GLFWwindow* glfwWindow,
             int focused
         );
     };

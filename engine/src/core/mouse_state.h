@@ -1,5 +1,7 @@
 #pragma once
 
+#include <arvek/input/mouse_button.h>
+
 #include <array>
 #include <cstddef>
 
@@ -14,29 +16,28 @@ namespace arvek
     class MouseState final
     {
     public:
-        // GLFW currently supports buttons 0 through 7.
         // This is an internal capacity, not a public API.
-        static constexpr std::size_t ButtonCount = 8;
+        static constexpr std::size_t ButtonCount = static_cast<std::size_t>(MouseButton::Count);
 
         // Publish pending mouse events for this frame.
         void beginFrame() noexcept;
 
-        void handlePress(std::size_t button) noexcept;
+        void handlePress(MouseButton button) noexcept;
 
-        void handleRelease(std::size_t button) noexcept;
+        void handleRelease(MouseButton button) noexcept;
 
         void handleCursorMove(double x, double y) noexcept;
 
         void handleScroll(double xOffset, double yOffset) noexcept;
 
         [[nodiscard]]
-        bool isDown(std::size_t button) const noexcept;
+        bool isDown(MouseButton button) const noexcept;
 
         [[nodiscard]]
-        bool wasPressed(std::size_t button) const noexcept;
+        bool wasPressed(MouseButton button) const noexcept;
 
         [[nodiscard]]
-        bool wasReleased(std::size_t button) const noexcept;
+        bool wasReleased(MouseButton button) const noexcept;
 
         [[nodiscard]]
         MousePosition cursorPosition() const noexcept;

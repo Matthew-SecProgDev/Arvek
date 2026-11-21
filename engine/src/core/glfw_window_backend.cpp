@@ -8,7 +8,6 @@
 #include <cstdint>
 #include <stdexcept>
 #include <string>
-#include <cstddef>
 
 namespace arvek
 {
@@ -217,34 +216,34 @@ namespace arvek
     }
 
     void GlfwWindowBackend::framebufferSizeCallback(
-        GLFWwindow* window,
-        int,
-        int)
+        GLFWwindow* glfwWindow,
+        int /*width*/,
+        int /*height*/)
     {
-        auto* backend = static_cast<GlfwWindowBackend*>(glfwGetWindowUserPointer(window));
-
-        if (backend)
-        {
-            backend->resized_ = true;
-        }
-    }
-
-    void GlfwWindowBackend::keyCallback(
-        GLFWwindow* window,
-        int key,
-        int /*scancode*/,
-        int action,
-        int /*mods*/)
-    {
-        auto* backend = static_cast<GlfwWindowBackend*>(glfwGetWindowUserPointer(window));
-        if (!backend)
+        auto* window = static_cast<GlfwWindowBackend*>(glfwGetWindowUserPointer(glfwWindow));
+        if (!window)
         {
             return;
         }
 
-        const auto translatedKey = translateGlfwKey(key);
+        window->resized_ = true;
+    }
 
-        if (!translatedKey)
+    void GlfwWindowBackend::keyCallback(
+        GLFWwindow* glfwWindow,
+        int glfwKey,
+        int /*scancode*/,
+        int action,
+        int /*mods*/)
+    {
+        auto* window = static_cast<GlfwWindowBackend*>(glfwGetWindowUserPointer(glfwWindow));
+        if (!window)
+        {
+            return;
+        }
+
+        const auto key = translateGlfwKey(glfwKey);
+        if (!key)
         {
             return;
         }
@@ -252,10 +251,10 @@ namespace arvek
         switch (action)
         {
         case GLFW_PRESS:
-            backend->keyboardState_.handlePress(*translatedKey);
+            window->keyboardState_.handlePress(*key);
             break;
         case GLFW_RELEASE:
-            backend->keyboardState_.handleRelease(*translatedKey);
+            window->keyboardState_.handleRelease(*key);
             break;
         case GLFW_REPEAT:
             // Repeating does not produce a new press transition.
@@ -265,41 +264,37 @@ namespace arvek
         }
 
         // Keep our temporary Escape-to-close behavior.
-        if (*translatedKey == Key::Escape &&
-            action == GLFW_PRESS)
+        if (*key == Key::Escape && action == GLFW_PRESS)
         {
-            glfwSetWindowShouldClose(window, GLFW_TRUE);
+            glfwSetWindowShouldClose(glfwWindow, GLFW_TRUE);
         }
     }
 
     void GlfwWindowBackend::mouseButtonCallback(
-        GLFWwindow* window,
-        int button,
+        GLFWwindow* glfwWindow,
+        int glfwButton,
         int action,
         int /*mods*/)
     {
-        auto* backend = static_cast<GlfwWindowBackend*>(glfwGetWindowUserPointer(window));
-
-        if (!backend)
+        auto* window = static_cast<GlfwWindowBackend*>(glfwGetWindowUserPointer(glfwWindow));
+        if (!window)
         {
             return;
         }
 
-        if (button < 0 ||
-            static_cast<std::size_t>(button) >= MouseState::ButtonCount)
+        const auto button = translateGlfwMouseButton(glfwButton);
+        if (!button)
         {
             return;
         }
-
-        const auto buttonIndex = static_cast<std::size_t>(button);
 
         switch (action)
         {
         case GLFW_PRESS:
-            backend->mouseState_.handlePress(buttonIndex);
+            window->mouseState_.handlePress(*button);
             break;
         case GLFW_RELEASE:
-            backend->mouseState_.handleRelease(buttonIndex);
+            window->mouseState_.handleRelease(*button);
             break;
         default:
             break;
@@ -307,52 +302,50 @@ namespace arvek
     }
 
     void GlfwWindowBackend::cursorPositionCallback(
-        GLFWwindow* window,
+        GLFWwindow* glfwWindow,
         double x,
         double y)
     {
-        auto* backend = static_cast<GlfwWindowBackend*>(glfwGetWindowUserPointer(window));
-
-        if (!backend)
+        auto* window = static_cast<GlfwWindowBackend*>(glfwGetWindowUserPointer(glfwWindow));
+        if (!window)
         {
             return;
         }
 
-        backend->mouseState_.handleCursorMove(x, y);
+        window->mouseState_.handleCursorMove(x, y);
     }
 
     void GlfwWindowBackend::scrollCallback(
-        GLFWwindow* window,
+        GLFWwindow* glfwWindow,
         double xOffset,
         double yOffset)
     {
-        auto* backend = static_cast<GlfwWindowBackend*>(glfwGetWindowUserPointer(window));
-
-        if (!backend)
+        auto* window = static_cast<GlfwWindowBackend*>(glfwGetWindowUserPointer(glfwWindow));
+        if (!window)
         {
             return;
         }
 
-        backend->mouseState_.handleScroll(
+        window->mouseState_.handleScroll(
             xOffset,
             yOffset
         );
     }
 
     void GlfwWindowBackend::windowFocusCallback(
-        GLFWwindow* window,
+        GLFWwindow* glfwWindow,
         int focused)
     {
-        auto* backend = static_cast<GlfwWindowBackend*>(glfwGetWindowUserPointer(window));
-        if (!backend)
+        auto* window = static_cast<GlfwWindowBackend*>(glfwGetWindowUserPointer(glfwWindow));
+        if (!window)
         {
             return;
         }
 
         if (focused == GLFW_FALSE)
         {
-            backend->keyboardState_.clear();
-            backend->mouseState_.clear();
+            window->keyboardState_.clear();
+            window->mouseState_.clear();
         }
     }
 }
