@@ -12,6 +12,7 @@
 #include <arvek/core/service_registrar.h>
 #include <arvek/core/service_provider.h>
 #include "game_time.h"
+#include <arvek/input/input.h>
 
 #include <cstdint>
 #include <memory>
@@ -45,11 +46,13 @@ namespace arvek
         config.title = "Arvek Engine";
 
         auto window = WindowFactory::create(config);
+        auto input = std::unique_ptr<Input>(new Input(*window));
         auto renderer = std::make_unique<VulkanRenderer>(*window);
 
         serviceRegistry_ = std::move(registry);
         glfwRuntime_ = std::move(runtime);
         window_ = std::move(window);
+        input_ = std::move(input);
         renderer_ = std::move(renderer);
 
         state_ = State::Initialized;
@@ -86,7 +89,7 @@ namespace arvek
         // when those systems are implemented.
 
         renderer_.reset();
-
+        input_.reset();
         window_.reset();
         glfwRuntime_.reset();
         serviceRegistry_.reset();

@@ -11,6 +11,7 @@ namespace arvek
 	class Window;
 	class VulkanRenderer;
 	class Application;
+    class Input;
 
 	class Engine final
 	{
@@ -47,6 +48,7 @@ namespace arvek
 		std::unique_ptr<ServiceRegistry> serviceRegistry_;
 		std::unique_ptr<GlfwRuntime> glfwRuntime_;
 		std::unique_ptr<Window> window_;
+        std::unique_ptr<Input> input_;
         std::unique_ptr<VulkanRenderer> renderer_;
 
 		State state_{ State::Constructed };
