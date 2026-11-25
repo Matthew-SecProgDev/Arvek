@@ -39,4 +39,24 @@ namespace arvek
     {
         return window_.mouseState().wasReleased(button);
     }
+
+    MousePosition Input::cursorPosition() const noexcept
+    {
+        return window_.mouseState().cursorPosition();
+    }
+
+    MousePosition Input::cursorDelta() const noexcept
+    {
+        return window_.mouseState().cursorDelta();
+    }
+
+    MousePosition Input::scrollDelta() const noexcept
+    {
+        return window_.mouseState().scrollDelta();
+    }
+
+    bool Input::hasCursorPosition() const noexcept
+    {
+        return window_.mouseState().hasCursorPosition();
+    }
 }

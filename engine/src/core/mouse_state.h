@@ -1,18 +1,13 @@
 #pragma once
 
 #include <arvek/input/mouse_button.h>
+#include <arvek/input/mouse_position.h>
 
 #include <array>
 #include <cstddef>
 
 namespace arvek
 {
-    struct MousePosition
-    {
-        double x{ 0.0 };
-        double y{ 0.0 };
-    };
-
     class MouseState final
     {
     public:

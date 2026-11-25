@@ -2,6 +2,7 @@
 
 #include <arvek/input/key.h>
 #include <arvek/input/mouse_button.h>
+#include <arvek/input/mouse_position.h>
 
 namespace arvek
 {
@@ -31,6 +32,21 @@ namespace arvek
 
         [[nodiscard]]
         bool wasMouseButtonReleased(MouseButton button) const noexcept;
+
+        [[nodiscard]]
+        MousePosition cursorPosition() const noexcept;
+
+        // Movement accumulated during the current input frame
+        [[nodiscard]]
+        MousePosition cursorDelta() const noexcept;
+
+        // Scroll accumulated during the current input frame
+        [[nodiscard]]
+        MousePosition scrollDelta() const noexcept;
+
+        // Whether a cursor position has been received
+        [[nodiscard]]
+        bool hasCursorPosition() const noexcept;
 
     private:
         friend class Engine;
