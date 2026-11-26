@@ -49,6 +49,8 @@ namespace arvek
         auto input = std::unique_ptr<Input>(new Input(*window));
         auto renderer = std::make_unique<VulkanRenderer>(*window);
 
+        registry->addEngineServiceReference(*input);
+
         serviceRegistry_ = std::move(registry);
         glfwRuntime_ = std::move(runtime);
         window_ = std::move(window);
@@ -85,14 +87,12 @@ namespace arvek
             );
         }
 
-        // Stop application and scene activity first
-        // when those systems are implemented.
+        serviceRegistry_.reset();
 
         renderer_.reset();
         input_.reset();
         window_.reset();
         glfwRuntime_.reset();
-        serviceRegistry_.reset();
 
         exitRequested_ = false;
         state_ = State::Shutdown;

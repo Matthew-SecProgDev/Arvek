@@ -30,4 +30,22 @@ namespace arvek
     private:
         std::unique_ptr<T> service_;
     };
+
+    template<typename T>
+    class ServiceReferenceHolder final : public IServiceHolder
+    {
+    public:
+        explicit ServiceReferenceHolder(T& service) noexcept
+            : service_(&service)
+        {
+        }
+
+        void* get() noexcept override
+        {
+            return service_;
+        }
+
+    private:
+        T* service_;
+    };
 }

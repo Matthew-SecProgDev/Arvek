@@ -36,6 +36,9 @@ namespace arvek
         template<typename T>
         T& addEngineService(std::unique_ptr<T> service);
 
+        template<typename T>
+        T& addEngineServiceReference(T& service);
+
         void clearGameServices() noexcept;
         void clear() noexcept;
 
@@ -92,4 +95,21 @@ T& arvek::ServiceRegistry::addEngineService(std::unique_ptr<T> service)
     );
 
     return *instance;
+}
+
+template <typename T>
+T& arvek::ServiceRegistry::addEngineServiceReference(T& service)
+{
+    static_assert(
+        std::is_object_v<T> && !std::is_const_v<T>,
+        "Service must be a non-const object type!"
+        );
+
+    addErased(
+        std::type_index(typeid(T)),
+        std::make_unique<ServiceReferenceHolder<T>>(service),
+        ServiceCategory::Engine
+    );
+
+    return service;
 }

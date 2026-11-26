@@ -11,9 +11,22 @@
 
 namespace
 {
+    void check(bool condition, const char* message)
+    {
+        if (!condition)
+        {
+            throw std::runtime_error(message);
+        }
+    }
+
     struct EngineService
     {
         int value{ 42 };
+    };
+
+    struct InputService
+    {
+        int value{ 50 };
     };
 
     struct GameService
@@ -56,6 +69,21 @@ namespace
         std::vector<int>& events_;
     };
 
+    struct BorrowedTrackedService
+    {
+        explicit BorrowedTrackedService(bool& destroyed)
+            : destroyed_(destroyed)
+        {
+        }
+
+        ~BorrowedTrackedService()
+        {
+            destroyed_ = true;
+        }
+
+        bool& destroyed_;
+    };
+
     template<typename T, typename = void>
     struct HasEngineRegistration : std::false_type {};
 
@@ -63,6 +91,16 @@ namespace
     struct HasEngineRegistration<T, std::void_t<
         decltype(std::declval<T&>().addEngineService(
             std::declval<std::unique_ptr<EngineService>>()
+        ))
+        >> : std::true_type {};
+
+    template<typename T, typename = void>
+    struct HasEngineReferenceRegistration : std::false_type {};
+
+    template<typename T>
+    struct HasEngineReferenceRegistration<T, std::void_t<
+        decltype(std::declval<T&>().addEngineServiceReference(
+            std::declval<EngineService&>()
         ))
         >> : std::true_type {};
 }
@@ -76,6 +114,11 @@ int main()
     static_assert(
         !HasEngineRegistration<ServiceRegistrar>::value,
         "Game registrar must not register engine services"
+        );
+
+    static_assert(
+        !HasEngineReferenceRegistration<ServiceRegistrar>::value,
+        "Game registrar must not register borrowed engine services."
         );
 
     ServiceRegistry registry;
@@ -185,6 +228,81 @@ int main()
     if (destructionOrder != std::vector<int>{ 2, 1 })
     {
         return EXIT_FAILURE;
+    }
+
+    // Register a service owned outside the registry.
+    {
+        InputService service;
+        ServiceRegistry borrowedRegistry;
+
+        borrowedRegistry.addEngineServiceReference(service);
+
+        auto borrowedProvider = borrowedRegistry.provider();
+
+        check(
+            &borrowedProvider.require<InputService>() == &service,
+            "Borrowed service identity mismatch."
+        );
+
+        check(
+            borrowedProvider.require<InputService>().value == 50,
+            "Borrowed service lookup failed."
+        );
+
+        borrowedRegistry.clearGameServices();
+
+        check(
+            borrowedProvider.find<InputService>() == &service,
+            "Engine service was removed by game cleanup."
+        );
+    } // borrowedRegistry destroyed first, service destroyed second
+
+    // Duplicate registration.
+    {
+        InputService service;
+        ServiceRegistry borrowedRegistry;
+
+        borrowedRegistry.addEngineServiceReference(service);
+
+        duplicateRejected = false;
+
+        try
+        {
+            borrowedRegistry.addEngineServiceReference(service);
+        }
+        catch (const std::logic_error&)
+        {
+            duplicateRejected = true;
+        }
+
+        check(
+            duplicateRejected,
+            "Duplicate engine service registration was accepted."
+        );
+    }
+
+    {
+        bool destroyed = false;
+
+        {
+            BorrowedTrackedService service(destroyed);
+
+            {
+                ServiceRegistry borrowedRegistry;
+
+                borrowedRegistry.addEngineServiceReference(service);
+            }
+
+            check(
+                !destroyed,
+                "Registry destroyed a borrowed service."
+            );
+        }
+
+        check(
+            destroyed,
+            "Borrowed service destructor was not called."
+        );
     }
 
     return EXIT_SUCCESS;
