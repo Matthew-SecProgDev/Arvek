@@ -704,3 +704,33 @@ add_test(
     NAME ArvekInputApiTest
     COMMAND ArvekInputApiTest
 )
+
+# ArvekSceneTest
+add_executable(ArvekSceneTest
+    scene_test.cpp
+)
+
+target_link_libraries(ArvekSceneTest
+    PRIVATE
+        ArvekEngine
+)
+
+add_test(
+    NAME ArvekSceneTest
+    COMMAND ArvekSceneTest
+)
+
+# ArvekFrameTimeTest
+add_executable(ArvekFrameTimeTest
+    frame_time_test.cpp
+)
+
+target_link_libraries(ArvekFrameTimeTest
+    PRIVATE
+        ArvekEngine
+)
+
+add_test(
+    NAME ArvekFrameTimeTest
+    COMMAND ArvekFrameTimeTest
+)
