@@ -734,3 +734,23 @@ add_test(
     NAME ArvekFrameTimeTest
     COMMAND ArvekFrameTimeTest
 )
+
+# ArvekSceneManagerTest
+add_executable(ArvekSceneManagerTest
+    scene_manager_test.cpp
+)
+
+target_link_libraries(ArvekSceneManagerTest
+    PRIVATE
+        ArvekEngine
+)
+
+target_include_directories(ArvekSceneManagerTest
+    PRIVATE
+        ${PROJECT_SOURCE_DIR}/engine/src/core
+)
+
+add_test(
+    NAME ArvekSceneManagerTest
+    COMMAND ArvekSceneManagerTest
+)

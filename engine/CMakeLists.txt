@@ -29,6 +29,7 @@ add_library(ArvekEngine STATIC
     src/core/mouse_state.cpp
     src/core/glfw_input_codes.cpp
     src/core/input.cpp
+    src/core/scene_manager.cpp
 )
 
 add_library(Arvek::Engine ALIAS ArvekEngine)
